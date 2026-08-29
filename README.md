@@ -27,22 +27,25 @@ tools/
 `index.html`을 브라우저로 열면 그대로 동작합니다. 파일을 더블클릭해도 되고,
 로컬 서버가 필요하면 아무 정적 서버나 쓰면 됩니다.
 
-## GitHub Pages로 공개하기
+## 공개 주소
 
-1. GitHub에서 새 저장소를 만듭니다 (예: `rebreathe-website`).
-2. 이 폴더에서 원격 주소를 연결하고 올립니다.
+**https://jy3266.github.io/Rebreathe_Proposal/**
 
-   ```bash
-   git remote add origin https://github.com/<사용자이름>/rebreathe-website.git
-   git push -u origin main
-   ```
+저장소: https://github.com/jy3266/Rebreathe_Proposal
+GitHub Pages는 **main 브랜치 / (root)** 에서 배포하도록 설정되어 있습니다.
+`.nojekyll` 파일이 있어 Jekyll 처리를 건너뛰고 파일을 그대로 서빙합니다.
 
-3. 저장소 **Settings → Pages**로 가서
-   *Source*는 **Deploy from a branch**, *Branch*는 **main / (root)** 로 지정하고 저장합니다.
-4. 1~2분 뒤 `https://<사용자이름>.github.io/rebreathe-website/` 에서 사이트가 열립니다.
+### 수정한 내용을 반영하려면
 
-저장소가 **Public**이어야 무료 플랜에서 Pages가 동작합니다.
-`.nojekyll` 파일이 들어 있어 Jekyll 처리를 건너뛰고 파일을 그대로 서빙합니다.
+```bash
+git add -A
+git commit -m "무엇을 고쳤는지"
+git push
+```
+
+푸시하고 1~2분 뒤 공개 주소에 반영됩니다.
+`?lang=en` 을 붙이면 영문으로 바로 열립니다 —
+https://jy3266.github.io/Rebreathe_Proposal/?lang=en
 
 ## 언어 전환은 어떻게 동작하나
 
