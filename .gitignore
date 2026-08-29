@@ -1,0 +1,15 @@
+# 편집 중 백업본
+*.bak
+
+# IR 원본 PDF — 용량이 크고 공개 저장소에 올릴 자료가 아님
+# (사이트에서 참조하지 않음. 공개하려면 아래 두 줄을 지우세요)
+*.pdf
+assets/doc/
+
+# OS / 편집기
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+.vscode/
+.idea/

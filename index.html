@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>리브리드(REBREATHE) — AI 기반 아동 멘탈케어 플랫폼</title>
+<meta name="description" content="멀티모달 AI·VR·블록체인 기반 4~12세 아동 정신건강 증진 플랫폼. 아이에겐 매일 만나는 단짝 친구, 부모에겐 가장 정확한 마음 번역기." />
+<meta property="og:title" content="리브리드(REBREATHE)" />
+<meta property="og:description" content="아이에겐 매일 만나는 단짝 친구, 부모에겐 가장 정확한 마음 번역기" />
+<meta property="og:type" content="website" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%232b3468'/%3E%3Cpath d='M50 26c11 0 20 9 20 20 0 14-20 28-20 28S30 60 30 46c0-11 9-20 20-20z' fill='%236fc3ec'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/css/style.css" />
+<script>
+  /* JS가 살아 있을 때만 등장 애니메이션을 켠다.
+     스크립트가 실패하면 2.5초 뒤 모든 내용을 그대로 보여준다. */
+  document.documentElement.classList.add('js');
+  setTimeout(function () {
+    if (!document.body || document.body.getAttribute('data-reveal-ready') !== '1') {
+      document.documentElement.classList.remove('js');
+    }
+  }, 2500);
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#main" data-en="Skip to main content">본문으로 건너뛰기</a>
+
+<div class="scrollbar" aria-hidden="true"><span id="scrollProgress"></span></div>
+
+<header class="nav" id="nav">
+  <div class="wrap nav__inner">
+    <a class="brand" href="#top">
+      <span class="brand__mark" aria-hidden="true">
+        <svg viewBox="0 0 40 40" width="34" height="34"><circle cx="20" cy="20" r="20" fill="#2b3468"/><path d="M20 10c6 0 11 5 11 11 0 8-11 15-11 15S9 29 9 21c0-6 5-11 11-11z" fill="#6fc3ec"/><circle cx="20" cy="18" r="4" fill="#fff"/></svg>
+      </span>
+      <span class="brand__text">
+        <b data-en="REBREATHE">리브리드</b>
+        <i data-en="AI MENTAL CARE">REBREATHE</i>
+      </span>
+    </a>
+
+    <nav class="nav__links" id="navLinks" aria-label="주요 섹션" data-en-aria-label="Main sections">
+      <a href="#problem" data-en="Problem">문제</a>
+      <a href="#solution" data-en="Solution">솔루션</a>
+      <a href="#features" data-en="Features">핵심 기능</a>
+      <a href="#play" data-en="Try it">체험하기</a>
+      <a href="#market" data-en="Market">시장·경쟁</a>
+      <a href="#business" data-en="Business">비즈니스</a>
+      <a href="#team" data-en="Team">팀</a>
+      <a class="nav__cta" href="#contact" data-en="Contact">문의하기</a>
+    </nav>
+
+    <div class="langtabs" role="group" aria-label="언어 선택 / Language" data-en-aria-label="Language">
+      <button class="langtabs__btn is-on" type="button" data-lang="ko" aria-pressed="true" lang="ko">한국어</button>
+      <button class="langtabs__btn" type="button" data-lang="en" aria-pressed="false" lang="en">EN</button>
+    </div>
+
+    <button class="nav__toggle" id="navToggle" aria-label="메뉴 열기" data-en-aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="top">
+  <div class="hero__bg" aria-hidden="true">
+    <img src="assets/img/hero-scene.jpg" alt="" />
+    <div class="hero__veil"></div>
+  </div>
+
+  <div class="wrap hero__inner">
+    <p class="hero__eyebrow reveal" data-en="Multimodal AI · Virtual Reality · Blockchain">멀티모달 AI · 가상현실(VR) · 블록체인</p>
+    <h1 class="hero__title reveal" data-en="REBREATHE">
+      리브리드<span>(REBREATHE)</span>
+    </h1>
+    <p class="hero__lead reveal" data-en="A <b>best friend</b> the child meets every day,<br />the most accurate <b>translator of that heart</b> for parents">
+      아이에겐 매일 만나는 <b>단짝 친구</b>,<br />
+      부모에겐 가장 정확한 <b>마음 번역기</b>
+    </p>
+    <p class="hero__sub reveal" data-en="Children bond with an AI character through play, parents read their child&#39;s heart in a report —<br class='br-pc' />a two-way mental care solution built for ages 4 to 12">
+      아이는 AI 캐릭터와 놀이로 교감하고, 부모는 리포트로 아이의 마음을 읽는<br class="br-pc" />
+      4~12세 맞춤형 양방향 멘탈 케어 솔루션
+    </p>
+    <div class="hero__actions reveal">
+      <a class="btn btn--primary btn--magnet" href="#play" data-en="Walk with Bada <span class='btn__tag'>Demo</span>">바다와 함께 걷기 <span class="btn__tag">체험</span></a>
+      <a class="btn btn--ghost btn--magnet" href="#solution" data-en="See the solution">솔루션 살펴보기</a>
+    </div>
+
+    <ul class="hero__stats reveal">
+      <li><b data-count="183000" data-suffix="명" data-en-suffix="">0</b><span data-en="children aged 0–12 treated for mental illness (2024)">0~12세 정신건강질환 환자 (2024)</span></li>
+      <li><b data-count="76" data-suffix="%">0</b><span data-en="rise in patient numbers over the past 5 years">지난 5년간 환자 수 증가율</span></li>
+      <li><b data-count="18.81" data-suffix="B" data-decimals="2">0</b><span data-en="target market size in 2031">2031년 목표 시장 규모</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ PROBLEM ============ -->
+<section class="section section--tint" id="problem">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="sec-head__tag">Problem</p>
+      <h2 class="sec-head__title" data-en="A crisis in children&#39;s mental health">아동 정신건강 위기</h2>
+      <p class="sec-head__desc" data-en="Left unattended, emotional instability in the formative years hardens into behavioural problems in adolescence and chronic illness in adulthood.">
+        인격 형성기 아동의 정서 불안을 방치할 경우, 청소년기 문제 행동 및 성인기 만성 질환으로 악화됩니다.
+      </p>
+    </header>
+
+    <div class="grid grid--3 problem-stats">
+      <article class="card card--stat reveal">
+        <p class="card--stat__label" data-en="Children aged 0–12 treated for mental illness, by year">연도별 0~12세 정신건강질환 환자 수</p>
+        <div class="bars" role="img" aria-label="2020년 10.5만명에서 2024년 18.3만명으로 증가" data-en-aria-label="Rising from 105,000 in 2020 to 183,000 in 2024">
+          <div class="bars__item" style="--h:57%"><span data-en="105K">10.5만</span><i></i><em>2020</em></div>
+          <div class="bars__item" style="--h:71%"><span></span><i></i><em>2021</em></div>
+          <div class="bars__item" style="--h:82%"><span></span><i></i><em>2022</em></div>
+          <div class="bars__item" style="--h:92%"><span></span><i></i><em>2023</em></div>
+          <div class="bars__item bars__item--hi" style="--h:100%"><span data-en="183K">18.3만</span><i></i><em>2024</em></div>
+        </div>
+        <p class="card--stat__note" data-en="&lt;b&gt;Up 76%&lt;/b&gt; · in five years"><b>76% 상승</b> · 최근 5년</p>
+      </article>
+
+      <article class="card card--stat reveal">
+        <p class="card--stat__label" data-en="Most frequent conditions, ages 7–12">7~12세 정신건강질환 다빈도 질병</p>
+        <ul class="rank">
+          <li style="--w:100%"><span>ADHD</span><b data-en="#1">1위</b></li>
+          <li class="rank--hi" style="--w:82%"><span data-en="Depression · anxiety">우울 · 불안장애</span><b data-en="#2">2위</b></li>
+          <li style="--w:58%"><span data-en="Autism spectrum">자폐장애</span><b data-en="#3">3위</b></li>
+          <li style="--w:40%"><span data-en="Tic disorders">틱장애</span><b data-en="#4">4위</b></li>
+        </ul>
+        <p class="card--stat__note" data-en="Depression and anxiety rank &lt;b&gt;second&lt;/b&gt;">우울·불안장애가 <b>2위</b></p>
+      </article>
+
+      <article class="card card--stat reveal">
+        <p class="card--stat__label" data-en="How major conditions progress">주요 정신질환의 경과</p>
+        <div class="course">
+          <svg viewBox="0 0 300 150" preserveAspectRatio="none" aria-hidden="true">
+            <path class="course__grid" d="M0 40H300M0 75H300M0 110H300" />
+            <path class="course__good" d="M4 26 C40 26, 55 108, 92 112 C130 116, 150 44, 296 34" />
+            <path class="course__bad"  d="M92 112 C120 118, 140 88, 165 92 C200 98, 220 128, 296 140" />
+          </svg>
+          <ul class="course__legend">
+            <li data-en="&lt;i class=&quot;is-good&quot;&gt;&lt;/i&gt;Early intervention · continued care"><i class="is-good"></i>조기 개입 · 지속 치료</li>
+            <li data-en="&lt;i class=&quot;is-bad&quot;&gt;&lt;/i&gt;Care delayed, dropped or relapsed"><i class="is-bad"></i>치료 지연 · 중단 / 재발</li>
+          </ul>
+        </div>
+        <p class="card--stat__note" data-en="Calls for &lt;b&gt;early intervention&lt;/b&gt; and continuous care"><b>초기 개입</b> 및 지속적인 케어 솔루션 필요</p>
+      </article>
+    </div>
+
+    <p class="src reveal" data-en="Source: Health Insurance Review and Assessment Service, &lt;i&gt;Statistics on Diseases and Medical Practices in Daily Life 2025&lt;/i&gt;">출처: 건강보험심사평가원, 『2025년 생활 속 질병·진료행위 통계』</p>
+
+    <!-- 기존 솔루션의 한계 -->
+    <header class="sec-head sec-head--sub reveal">
+      <h3 class="sec-head__title sec-head__title--sm" data-en="Where existing solutions fall short">기존 솔루션의 한계</h3>
+    </header>
+
+    <div class="grid grid--4">
+      <article class="card card--prob reveal">
+        <p class="tagline">Problem 1</p>
+        <h4 data-en="Paper and mobile screening tests">심리 검사지 / 모바일 검사 앱</h4>
+        <p data-en="Built to &lt;b&gt;measure&lt;/b&gt; rather than prevent, with little room to actually care for how a child feels">예방이 아닌 <b>측정</b>을 목적으로 하며, 아동의 정서를 케어하는 역할에 한계가 있음</p>
+      </article>
+      <article class="card card--prob reveal">
+        <p class="tagline">Problem 2</p>
+        <h4 data-en="Drawing-based psychological tests">그림 심리 검사</h4>
+        <p data-en="Structurally incapable of the &lt;b&gt;two-way exchange&lt;/b&gt; that comforts a child or sits with their feelings">아이의 감정에 공감하거나 진정시켜주는 <b>양방향 소통</b>이 구조적으로 불가능</p>
+      </article>
+      <article class="card card--prob reveal">
+        <p class="tagline">Problem 3</p>
+        <h4 data-en="Video and emotion diaries">영상 / 감정 일기</h4>
+        <p data-en="Putting feelings into words is itself a &lt;b&gt;high barrier to entry&lt;/b&gt;, and it soon starts to feel like homework">감정과 생각을 말로 표현해야 하는 것 자체가 <b>높은 진입장벽</b>을 형성하고 숙제로 느껴짐</p>
+      </article>
+      <article class="card card--prob reveal">
+        <p class="tagline">Problem 4</p>
+        <h4 data-en="Mental care services built for adults">성인용 멘탈 케어 서비스</h4>
+        <p data-en="Text-heavy, complex interfaces &lt;b&gt;shut out children&lt;/b&gt; who are still learning to read and write">텍스트 기반의 복잡한 UI로 구성되어, 읽기·쓰기가 서툰 <b>아이들의 사용이 차단됨</b></p>
+      </article>
+    </div>
+
+    <p class="banner banner--dark reveal" data-en="Weighted towards diagnosis and record-keeping, they share the &lt;b&gt;structural limit of a one-way approach&lt;/b&gt; — no real dialogue, and nothing that makes a child want to come back">
+      진단과 기록에 치중하여 양방향 소통과 재미 요소가 결여된 <b>단방향 접근의 구조적 한계</b>를 지님
+    </p>
+  </div>
+</section>
+
+<!-- ============ SOLUTION ============ -->
+<section class="section" id="solution">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="sec-head__tag">Solution</p>
+      <h2 class="sec-head__title" data-en="Play that doubles as care">놀이가 곧 케어가 되는 구조</h2>
+      <p class="sec-head__desc" data-en="The child talks with an AI character by voice inside a 3D world, and that conversation is translated into an emotional report for the caregiver.">
+        아이는 3D 공간에서 AI 캐릭터와 음성으로 대화하고, 그 대화는 보호자를 위한 감정 리포트로 번역됩니다.
+      </p>
+    </header>
+
+    <div class="solution">
+      <div class="solution__media reveal">
+        <figure class="shot shot--wide">
+          <img src="assets/img/characters.jpg" alt="3D 공원 공간에서 아이를 기다리는 고양이·곰·부엉이 AI 캐릭터. 화면 하단에 '대화 하기', '함께 걷기' 버튼이 있다." data-en-alt="Cat, bear and owl AI characters waiting for a child in a 3D park, with Talk and Walk together buttons along the bottom of the screen." loading="lazy" />
+          <figcaption data-en="Child&#39;s screen — real-time 3D character interaction">아이 화면 — 실시간 3D 캐릭터 인터랙션</figcaption>
+        </figure>
+        <figure class="shot shot--phone">
+          <img src="assets/img/parent-report.jpg" alt="보호자용 주간 리포트 화면. 이번 주 마음 날씨 '맑음' 60% 행복함, 감정 리듬 안정성 점수 85점." data-en-alt="Weekly report for caregivers: this week the mood forecast reads clear, 60% happy, with an emotional-rhythm stability score of 85." loading="lazy" />
+          <figcaption data-en="Caregiver&#39;s screen — weekly emotion report">보호자 화면 — 주간 감정 리포트</figcaption>
+        </figure>
+      </div>
+
+      <div class="solution__body">
+        <ol class="flow">
+          <li class="reveal">
+            <span class="flow__num">01</span>
+            <h4 data-en="The child plays">아이가 논다</h4>
+            <p data-en="They bond with the character through &lt;b&gt;voice alone&lt;/b&gt; — no literacy barrier, no reading or writing required.">문해력 장벽 없이 <b>100% 음성 대화</b>로 캐릭터와 교감합니다. 읽기·쓰기가 필요 없습니다.</p>
+          </li>
+          <li class="reveal">
+            <span class="flow__num">02</span>
+            <h4 data-en="AI reads their heart">AI가 마음을 읽는다</h4>
+            <p data-en="A multimodal AI that hears not only the words but the &lt;b&gt;tone and pace of the voice&lt;/b&gt; picks up emotional signals.">발화 내용과 <b>음성 톤·속도</b>까지 이해하는 멀티모달 AI가 감정 신호를 포착합니다.</p>
+          </li>
+          <li class="reveal">
+            <span class="flow__num">03</span>
+            <h4 data-en="Conversation becomes care">대화가 케어가 된다</h4>
+            <p data-en="A four-step interaction: empathy → emotional regulation → &lt;b&gt;CBT-based cognitive reframing&lt;/b&gt; → positive reinforcement.">공감 → 감정 안정화 → <b>CBT 기반 인지 재구성</b> → 긍정 강화로 이어지는 4단계 상호작용.</p>
+          </li>
+          <li class="reveal">
+            <span class="flow__num">04</span>
+            <h4 data-en="The parent understands">부모가 이해한다</h4>
+            <p data-en="Caregivers receive a report visualising emotional trends, together with &lt;b&gt;practical guidance&lt;/b&gt; on what to do next.">감정 추이를 시각화한 리포트와 <b>행동 가이드</b>가 보호자에게 전달됩니다.</p>
+          </li>
+        </ol>
+
+        <p class="quote reveal" data-en="&ldquo;REBREATHE finds a child&rsquo;s emotional signals inside a conversation with an AI character,&lt;br /&gt;and translates that change into language a caregiver can understand.&rdquo;">
+          “리브리드는 아이의 감정 신호를 AI 캐릭터와의 대화 속에서 발견하고,<br />
+          그 변화를 보호자가 이해할 수 있는 언어로 번역합니다.”
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEATURES ============ -->
+<section class="section section--tint" id="features">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="sec-head__tag">Core Features</p>
+      <h2 class="sec-head__title" data-en="Core features">핵심 기능</h2>
+    </header>
+
+    <!-- (1) AI 상호작용 4단계 -->
+    <div class="feat">
+      <h3 class="feat__title reveal" data-en="&lt;span&gt;01&lt;/span&gt; Real-time 3D engine and in-house AI interaction"><span>01</span> 실시간 3D 엔진 &amp; 자체 개발 AI 상호작용</h3>
+      <div class="grid grid--4 convo">
+        <article class="card card--convo reveal">
+          <h4 data-en="Noticing, and stepping in">문제 인식 &amp; 능동적 개입</h4>
+          <p class="convo__situation" data-en="[Scene] Minjun is lying face down on the bed, sniffling">[상황] 민준이 침대에 엎드려 훌쩍임</p>
+          <div class="chat">
+            <p class="chat__me" data-en="&ldquo;*sniff*… hnngh…&rdquo;">“흑…흐잉…”</p>
+            <p class="chat__ai" data-en="&lt;i&gt;(in a soft, careful voice)&lt;/i&gt; &ldquo;Minjun, are you crying? What happened?&rdquo;"><i>(조심스럽고 부드러운 톤으로)</i> “민준아, 혹시 울고 있니? 무슨 일이야?”</p>
+          </div>
+          <p class="convo__note" data-en="Reads the situation from sound before speaking">말을 걸기 전, 소리로 상황을 인지</p>
+        </article>
+
+        <article class="card card--convo reveal">
+          <h4 data-en="Letting it out, and being heard">감정 표출과 공감</h4>
+          <p class="convo__situation" data-en="[Scene] The child opens up to the AI">[상황] AI에게 속마음을 털어놓음</p>
+          <div class="chat">
+            <p class="chat__me" data-en="&ldquo;Jihun took my robot away… I&rsquo;m so sad…&rdquo;">“흐엉.. 지훈이가 내 로봇을 뺏어가서.. 꼭.. 너무 슬퍼…”</p>
+            <p class="chat__ai" data-en="&ldquo;Oh no, that must have hurt. Losing a robot that means so much to you is really hard.&rdquo;">“저런, 정말 슬펐겠다. 소중한 로봇을 뺏겨서 너무 힘들었구나..”</p>
+          </div>
+          <p class="convo__note" data-en="Puts the child&rsquo;s feeling into words for them">아이의 감정을 언어로 읽어줌</p>
+        </article>
+
+        <article class="card card--convo reveal">
+          <h4 data-en="Settling down, and seeing differently">감정 조절 및 인지 전환</h4>
+          <p class="convo__situation" data-en="[AI] Guiding the child back to calm">[AI] 감정 안정화 유도</p>
+          <div class="chat">
+            <p class="chat__ai" data-en="&ldquo;Shall we breathe slowly together? Follow me — hooo…&rdquo;">“우리 같이 천천히 숨 쉬어볼까? 나를 따라 해봐. ‘후우~’”</p>
+            <p class="chat__me" data-en="&ldquo;*hnnh*… hooo… hooo…&rdquo;">“흐읍.. 후우… 후우…”</p>
+            <p class="chat__ai" data-en="&ldquo;Why do you think Jihun did that? Maybe he wanted a turn so badly he just couldn&rsquo;t wait?&rdquo;">“지훈이가 왜 그랬을까? 혹시 너무 부러워서 잠깐 보고 싶었던 건 아니었을까?”</p>
+          </div>
+          <p class="convo__note" data-en="CBT-based cognitive reframing">CBT 기반 인지 재구성</p>
+        </article>
+
+        <article class="card card--convo reveal">
+          <h4 data-en="Growing, and being celebrated">성취와 긍정 강화</h4>
+          <p class="convo__situation" data-en="[AI] Reward feedback (gamification)">[AI] 보상 피드백 (게이미피케이션)</p>
+          <div class="chat">
+            <p class="chat__me" data-en="&ldquo;Hmm… maybe. Next time I&rsquo;ll say, ask me first if you want to borrow it.&rdquo;">“음.. 그럴 수도 있겠다… 다음엔 ‘빌려달라고 먼저 말해줘’ 라고 할래.”</p>
+            <p class="chat__ai" data-en="&lt;i&gt;(the character levels up and dances, with a sound effect)&lt;/i&gt; &ldquo;Wow! Your heart just grew a whole inch. That&rsquo;s amazing!&rdquo;"><i>(효과음과 함께 캐릭터가 레벨업하며 춤을 춤)</i> “우와! 민준이 마음이 한 뼘 더 자랐네! 멋지다!”</p>
+          </div>
+          <p class="convo__note" data-en="Rewards positive behaviour as growth">긍정 행동을 성장으로 보상</p>
+        </article>
+      </div>
+    </div>
+
+    <!-- (2) 몰입형 콘텐츠 -->
+    <div class="feat">
+      <h3 class="feat__title reveal" data-en="&lt;span&gt;02&lt;/span&gt; Immersive interactive content"><span>02</span> 몰입형 인터랙티브 콘텐츠</h3>
+      <div class="grid grid--3">
+        <article class="card card--feat card--feat-img reveal">
+          <p class="tagline" data-en="Feature 1">특징 1</p>
+          <h4 data-en="Emotion made visible, in real time">실시간 감정 시각화</h4>
+          <p data-en="Missions, weather, nature and seasons in the world &lt;b&gt;respond in real time&lt;/b&gt; to how the child feels, building a deep sense of being understood">아이의 감정 상태에 따라 다양한 미션과 공간의 날씨·자연·계절 등의 <b>물리 환경이 실시간으로 반응</b>하고 변화하여 깊은 공감대를 형성</p>
+          <img src="assets/img/feature-seasons.jpg"
+               alt="같은 공원 공간이 한낮, 가을 노을, 밤으로 변화하는 세 장면" data-en-alt="The same park in three moods: midday, an autumn sunset, and night" loading="lazy" width="840" height="572" />
+        </article>
+        <article class="card card--feat card--feat-img reveal">
+          <p class="tagline" data-en="Feature 2">특징 2</p>
+          <h4 data-en="Pure voice conversation, no literacy barrier">문해력 장벽 없는 순수 음성 대화</h4>
+          <p data-en="Voice-only conversation &lt;b&gt;opens the service to any child&lt;/b&gt;, while a &lt;b&gt;multimodal AI&lt;/b&gt; that reads tone and context deepens the emotional connection">100% 음성 대화를 통해 <b>아동의 접근성을 확보</b>하고, 음성 톤과 맥락까지 이해하는 <b>멀티모달 AI</b>로 정서적 교감을 극대화</p>
+          <img class="is-plain" src="assets/img/feature-voice.png"
+               alt="아이가 스마트폰으로 AI 캐릭터와 이야기하는 모습" data-en-alt="A child talking to an AI character on a smartphone" loading="lazy" width="636" height="459" />
+        </article>
+        <article class="card card--feat reveal card--feat-img">
+          <p class="tagline" data-en="Feature 3">특징 3</p>
+          <h4 data-en="Gamified companionship">육성형 게이미피케이션</h4>
+          <p data-en="A &lt;b&gt;nurturing system&lt;/b&gt; in which expressing feelings makes a virtual friend grow, building real attachment and bringing children back on their own">감정 표현과 정서적 교감이 가상 친구의 성장으로 이어지는 <b>육성 시스템</b>으로 깊은 애착을 형성하고 자발적인 접속을 유도</p>
+          <img src="assets/img/feature-levelup.jpg"
+               alt="캐릭터가 레벨업하며 기뻐하는 화면" data-en-alt="The character celebrating as it levels up" loading="lazy" width="432" height="300" />
+        </article>
+      </div>
+    </div>
+
+    <!-- (3) 3중 신뢰 인프라 -->
+    <div class="feat">
+      <h3 class="feat__title reveal" data-en="&lt;span&gt;03&lt;/span&gt; A triple trust layer that turns play into care"><span>03</span> ‘놀이’를 ‘케어’로 완성하는 3중 신뢰 인프라</h3>
+      <div class="grid grid--3">
+        <article class="card card--feat card--feat-img reveal">
+          <p class="tagline">Safety</p>
+          <h4 data-en="Safety guardrails">세이프티 가드레일</h4>
+          <p data-en="Speech and topics that arise in session are filtered to the child&rsquo;s developmental stage &lt;b&gt;(ages 5–8, 9–12)&lt;/b&gt;, and any sign of risk &lt;b&gt;triggers guidance toward safe action&lt;/b&gt;">상담에서 발생하는 발화와 주제를 아동의 정서 발달 단계<b>(5~8세, 9~12세)</b>에 맞춰 필터링하고, 잠재적 위험 상황 발생 시 <b>안전 행동을 유도</b></p>
+          <img class="is-shot" src="assets/img/trust-safety.jpg"
+               alt="위험 발화를 감지해 안전한 행동을 유도하는 대화 화면 — 1) 범죄의심 징후포착, 2) 안전한 행동 유도"
+               data-en-alt="A conversation screen detecting risky speech and guiding safe action — 1) spotting signs of possible harm, 2) guiding toward safety"
+               loading="lazy" width="860" height="688" />
+        </article>
+        <article class="card card--feat card--feat-img reveal">
+          <p class="tagline">Report</p>
+          <h4 data-en="Psychological report for parents">자녀 심리 리포트</h4>
+          <p data-en="Conversation data is analysed as a whole to &lt;b&gt;visualise the child&rsquo;s emotional state&lt;/b&gt;, helping parents &lt;b&gt;understand what their child is feeling&lt;/b&gt;">아이가 나눈 대화 데이터를 종합 분석하여 아이의 <b>감정 상태를 시각화</b>하고, 부모가 <b>자녀의 마음을 이해</b>할 수 있도록 도움</p>
+          <img class="is-shot" src="assets/img/trust-report.jpg"
+               alt="주간 리포트와 부모 양육 가이드 화면 — 마음 날씨, 감정 리듬, 엄마·아빠를 위한 3가지 제안"
+               data-en-alt="Weekly report and parenting guide — mood forecast, emotional rhythm, and three suggestions for mum and dad"
+               loading="lazy" width="860" height="688" />
+        </article>
+        <article class="card card--feat card--feat-img reveal">
+          <p class="tagline">Security</p>
+          <h4 data-en="Protection for children&rsquo;s counselling data">아동 상담 데이터 보호체계</h4>
+          <p data-en="Counselling data is locked so that &lt;b&gt;only the guardian can read it&lt;/b&gt;, with &lt;b&gt;integrity guaranteed&lt;/b&gt; end to end">아동 상담 데이터를 <b>보호자만 열람</b>할 수 있도록 제어하고 데이터에 대한 <b>무결성을 보장</b></p>
+          <ol class="chainflow">
+            <li data-en="Encryption">암호화</li>
+            <li>CP-ABE</li>
+            <li data-en="IPFS storage">IPFS 저장</li>
+            <li data-en="On-chain record">블록체인 기록</li>
+          </ol>
+          <img class="is-shot" src="assets/img/trust-security.jpg"
+               alt="암호화 → CP-ABE → IPFS 저장 → 블록체인 기록 → 복호화로 이어지는 데이터 보호 흐름도"
+               data-en-alt="Data protection flow: encryption → CP-ABE → IPFS storage → blockchain record → decryption"
+               loading="lazy" width="860" height="688" />
+        </article>
+      </div>
+    </div>
+
+    <!-- (4) 자체 IP -->
+    <div class="feat">
+      <h3 class="feat__title reveal" data-en="&lt;span&gt;04&lt;/span&gt; Proprietary IP built over years"><span>04</span> 다년 개발을 통한 자체 IP 보유</h3>
+      <ol class="timeline">
+        <li class="reveal">
+          <b class="timeline__year" data-en="2014–present">2014–현재</b>
+          <h4 data-en="Art practice for healing and community">치유와 커뮤니티를 위한 예술 활동</h4>
+          <p data-en="Working as an installation and interactive media artist">설치 예술 및 인터랙티브 미디어 아티스트로 활동</p>
+        </li>
+        <li class="reveal">
+          <b class="timeline__year">2021</b>
+          <h4 data-en="VR-HOTLINE begins">VR-HOTLINE 시작</h4>
+          <p data-en="A VR mental health project born out of the founder&rsquo;s own experience">대표의 개인 경험을 바탕으로 한 VR 정신건강 프로젝트 시작</p>
+        </li>
+        <li class="reveal">
+          <b class="timeline__year">2022–2023</b>
+          <h4 data-en="Art and technology MVP 1, 2">예술·기술 MVP 1, 2</h4>
+          <p data-en="Immersive VR recovery experiences and crisis-intervention experiments drawn from lived experience">개인 경험 기반의 몰입형 VR 회복 경험 및 위기 개입 실험</p>
+        </li>
+        <li class="reveal">
+          <b class="timeline__year">2024–2025</b>
+          <h4 data-en="REBREATHE founded, technology matured">Rebreathe 설립 및 기술 고도화</h4>
+          <p data-en="Research into in-house AI counselling, interaction, biofeedback and data security architecture">자체 개발 AI 상담, 인터랙션, 바이오 피드백, 데이터 보안 구조 연구</p>
+        </li>
+      </ol>
+      <p class="banner reveal" data-en="Patent pending · &lt;b&gt;Method and system for raising a digital creature that interacts with a user&lt;/b&gt; (application no. 10-2023-0169867)">
+        특허 출원 · <b>사용자와 상호작용하는 디지털 크리쳐 육성 방법 및 그 시스템</b> (출원번호 10-2023-0169867)
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PLAY (2D 산책 · 텍스트 상담 데모) ============ -->
+<section class="section section--play" id="play">
+  <div class="wrap">
+    <header class="sec-head sec-head--center reveal">
+      <p class="sec-head__tag">Try it</p>
+      <h2 class="sec-head__title" data-en="Walk with Bada">바다와 함께 걷기</h2>
+      <p class="sec-head__desc" data-en="A 2D experience where you &lt;b&gt;walk the shoreline yourself with the keyboard&lt;/b&gt; and talk with the character. The sky and sea change colour with the child&rsquo;s feelings, and when the walk ends a caregiver report is written.">
+        <b>키보드로 바닷가를 직접 걸어 다니며</b> 캐릭터와 이야기를 나누는 2D 체험입니다.
+        아이의 감정에 따라 하늘과 바다의 색이 바뀌고, 산책이 끝나면 보호자 리포트가 만들어집니다.
+      </p>
+    </header>
+
+    <div class="game reveal" id="game" tabindex="-1">
+      <canvas id="gameCanvas" aria-label="바닷가를 걷는 2D 산책 장면" data-en-aria-label="A 2D scene of a walk along the shore"></canvas>
+
+      <!-- 시작 화면 -->
+      <div class="game__overlay game__overlay--start" id="gameStart">
+        <div class="game__panel">
+          <p class="game__kicker" data-en="Text counselling demo">텍스트 상담 데모</p>
+          <h3 data-en="Shall we walk along the shore together?">같이 바닷가를 걸을까요?</h3>
+          <p class="game__start-msg" data-en="Walk the shoreline freely with the arrow keys, and &lt;b&gt;type&lt;/b&gt; whatever you want to say in the box below. Try picking up the &lt;b&gt;seashells&lt;/b&gt; scattered across the sand, too.">
+            방향키로 바닷가를 자유롭게 걸어 다니고, 아래 입력창에 <b>글로</b> 이야기를 적어 보세요.
+            모래밭에 흩어진 <b>조개껍데기</b>도 주워 보세요.
+          </p>
+
+          <ul class="game__keys">
+            <li><kbd>←</kbd><kbd>→</kbd><span data-en="Walk along the shore">바닷가를 따라 걷기</span></li>
+            <li><kbd>↑</kbd><kbd>↓</kbd><span data-en="Toward the sea / toward the dunes">바다 쪽 / 모래언덕 쪽</span></li>
+            <li><kbd>Space</kbd><span data-en="Pick up · talk">줍기 · 말 걸기</span></li>
+            <li><kbd>Enter</kbd><span data-en="Send your message">이야기 보내기</span></li>
+          </ul>
+
+          <ol class="game__steps">
+            <li data-en="&lt;b&gt;1&lt;/b&gt;Listening"><b>1</b>이야기 듣기</li>
+            <li data-en="&lt;b&gt;2&lt;/b&gt;Empathising"><b>2</b>공감하기</li>
+            <li data-en="&lt;b&gt;3&lt;/b&gt;Breathing"><b>3</b>숨 고르기</li>
+            <li data-en="&lt;b&gt;4&lt;/b&gt;Reframing"><b>4</b>다르게 보기</li>
+            <li data-en="&lt;b&gt;5&lt;/b&gt;Celebrating"><b>5</b>칭찬하기</li>
+          </ol>
+
+          <button class="btn btn--primary" id="gameGo" type="button" data-en="🚶 Start the walk">🚶 산책 시작하기</button>
+          <p class="game__fineprint" data-en="Runs right in your browser, nothing to install · nothing you type ever leaves this browser">
+            설치 없이 브라우저에서 바로 동작합니다 · 대화 내용은 이 브라우저 밖으로 나가지 않습니다
+          </p>
+        </div>
+      </div>
+
+      <!-- 진행 HUD -->
+      <div class="game__hud" id="gameHud" hidden>
+        <div class="game__chips">
+          <span class="chip chip--stage" id="gameStage">만나기</span>
+          <span class="chip chip--mood" id="gameMood">마음 날씨 · 잔잔함</span>
+          <span class="chip chip--step" id="gameStep">0m 걸었어요</span>
+          <span class="chip chip--shell" id="gameShell">조개 0 / 6</span>
+          <button class="chip chip--voice" id="gameVoice" type="button" aria-pressed="false">🔈 목소리 끔</button>
+          <button class="chip chip--quit" id="gameQuit" type="button" data-en="End the walk">산책 끝내기</button>
+        </div>
+
+        <div class="game__notice" id="gameNotice" hidden data-en="🛟 &lt;b&gt;A safety guardrail was triggered.&lt;/b&gt; This is a moment to talk it through with a trusted adult — in Korea, the suicide prevention line is &lt;b&gt;109&lt;/b&gt; and youth counselling is &lt;b&gt;1388&lt;/b&gt;.">
+          🛟 <b>세이프티 가드레일이 작동했어요.</b>
+          지금은 보호자와 함께 이야기해야 할 순간입니다 — 자살예방 상담전화 <b>109</b> · 청소년 상담 <b>1388</b>
+        </div>
+
+        <!-- 모바일 조작 패드 -->
+        <div class="game__pad" id="gamePad" aria-hidden="true">
+          <button data-dir="up" type="button">▲</button>
+          <button data-dir="left" type="button">◀</button>
+          <button data-dir="down" type="button">▼</button>
+          <button data-dir="right" type="button">▶</button>
+        </div>
+
+        <div class="game__bottom">
+          <div class="game__bubble">
+            <span class="game__who" id="gameSubtitleWho">바다</span>
+            <p class="game__sub" id="gameSubtitle">…</p>
+          </div>
+
+          <div class="game__say">
+            <label class="sr-only" for="gameTextInput" data-en="What the child wants to say">아이가 하고 싶은 말</label>
+            <input id="gameTextInput" type="text" maxlength="140" autocomplete="off"
+                   placeholder="여기에 이야기를 적어 보세요" data-en-placeholder="Type what you want to say here" />
+            <button id="gameTextSend" type="button" data-en="Send">보내기</button>
+          </div>
+
+          <p class="game__hint" id="gameHint"></p>
+
+          <ul class="game__quick" id="gameQuick"></ul>
+        </div>
+      </div>
+
+      <!-- 종료 리포트 -->
+      <div class="game__overlay game__overlay--end" id="gameEnd" hidden>
+        <div class="game__panel game__panel--wide">
+          <p class="game__kicker" data-en="Caregiver report preview">보호자 리포트 미리보기</p>
+          <h3 data-en="Today&rsquo;s walk">오늘의 산책 기록</h3>
+          <div id="gameReport"></div>
+          <div class="game__endActions">
+            <button class="btn btn--primary" id="gameAgain" type="button" data-en="Walk again">다시 걷기</button>
+            <a class="btn btn--ghost" href="#contact" data-en="Talk to us">도입 문의하기</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="game__disclaimer reveal" data-en="⚠️ This experience is a &lt;b&gt;rule-based demo&lt;/b&gt; built to show REBREATHE&rsquo;s counselling structure (noticing → empathy → emotional regulation → cognitive reframing → positive reinforcement) on the web. It is not the multimodal AI model used in the real service, and it is no substitute for medical diagnosis or treatment. Nothing you type is sent to a server; it is all processed inside your browser.">
+      ⚠️ 본 체험은 리브리드의 상담 구조(문제 인식 → 공감 → 감정 조절 → 인지 재구성 → 긍정 강화)를
+      웹에서 보여주기 위한 <b>규칙 기반 데모</b>입니다. 실제 서비스의 멀티모달 AI 모델이 아니며,
+      의학적 진단·치료를 대신하지 않습니다. 대화 내용은 서버로 전송되지 않고 브라우저 안에서만 처리됩니다.
+    </p>
+  </div>
+</section>
+
+<!-- ============ MARKET / COMPETITION ============ -->
+<section class="section" id="market">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="sec-head__tag">Market &amp; Competition</p>
+      <h2 class="sec-head__title" data-en="Market and competitive edge">시장과 경쟁 우위</h2>
+    </header>
+
+    <div class="market">
+      <article class="card card--market reveal">
+        <h3 data-en="Target market">목표 시장</h3>
+        <p class="card--market__sub" data-en="Mental health apps for children and adolescents">아동·청소년 대상 정신 건강 앱 시장</p>
+        <div class="funnel">
+          <div class="funnel__small"><em data-en="2026">2026년</em><b>9.45B</b></div>
+          <p class="funnel__cagr">CAGR <b>14.76%</b></p>
+          <div class="funnel__big"><em data-en="2031">2031년</em><b>18.81B</b></div>
+        </div>
+      </article>
+
+      <article class="card card--market reveal">
+        <h3 data-en="Segmenting the target market">타겟 시장 세분화</h3>
+        <ul class="segments">
+          <li><b>100%</b><span data-en="Children aged 4–12 (approx. 3.3 million)">4~12세 아동 (약 330만명)</span></li>
+          <li><b>97%</b><span data-en="Acquired symptoms and at-risk group">후천적 증상 및 잠재 그룹</span></li>
+          <li><b>20%</b><span data-en="Experience of depression or anxiety">우울 및 불안 경험</span></li>
+          <li><b>73%</b><span data-en="Mild to moderate emotional difficulty">경·중등도 정서 어려움</span></li>
+          <li><b>70%</b><span data-en="Highly engaged caregivers">고관여 보호자 그룹</span></li>
+        </ul>
+        <div class="segments__result">
+          <p data-en="Core customers: &lt;b&gt;9.91%&lt;/b&gt; · roughly &lt;b&gt;230,000 children&lt;/b&gt;">서비스 핵심 고객 <b>9.91%</b> · 약 <b>23만명</b></p>
+          <p class="segments__note" data-en="We concentrate on the mild-to-moderate group, where preventive emotional care pays off most, and target caregivers with a high willingness to pay — securing early product-market fit and margin.">
+            예방형 정서 케어가 가장 큰 효과를 발휘하는 경·중등도 아동을 집중 공략하고,
+            자녀 정서 관리에 지불 의사가 높은 보호자를 타겟팅하여 초기 PMF와 수익성을 확보
+          </p>
+        </div>
+      </article>
+    </div>
+
+    <header class="sec-head sec-head--sub reveal">
+      <h3 class="sec-head__title sec-head__title--sm" data-en="How we differ from the competition">경쟁사 대비 차별성</h3>
+    </header>
+
+    <div class="table-scroll reveal">
+      <table class="compare">
+        <caption class="sr-only" data-en="REBREATHE compared with competing services, item by item">리브리드와 경쟁 서비스의 항목별 비교</caption>
+        <thead>
+          <tr>
+            <th scope="col" data-en="Comparison">비교 항목</th>
+            <th scope="col" class="is-us">Rebreathe</th>
+            <th scope="col">Kids Diary</th>
+            <th scope="col">SOYES KIDS</th>
+            <th scope="col" data-en="Coaching / clinic-linked services">코칭/진료 연동 서비스</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row" data-en="Core method">핵심 방식</th><td class="is-us" data-en="Real-time voice conversation">실시간 음성 대화</td><td data-en="Emotion diary">감정 일기</td><td data-en="Mobile psychological test">모바일 심리 검사</td><td data-en="Coaching / clinic referral">코칭 / 진료 연동</td></tr>
+          <tr><th scope="row" data-en="Target age">타겟 연령</th><td class="is-us" data-en="Ages 4–12">4~12세</td><td data-en="Ages 7+">7세 이상</td><td data-en="Mostly parents">학부모 위주</td><td data-en="All ages">전 연령</td></tr>
+          <tr><th scope="row" data-en="Accessibility for children">아동 접근성</th><td class="is-us" data-en="Excellent (voice-based)">최상 (음성 기반)</td><td data-en="Low (literacy barrier / burden of writing)">하 (문해력 장벽 / 기록 부담)</td><td data-en="Low (test fatigue / resistance)">하 (검사 피로 / 거부감)</td><td data-en="Medium (nothing fun about it)">중 (재미 요소 X)</td></tr>
+          <tr><th scope="row" data-en="Retention">지속성</th><td class="is-us" data-en="High (3D game / nurturing)">높음 (3D 게임 / 육성)</td><td data-en="Low">낮음</td><td data-en="One-off">일회성</td><td data-en="Low">낮음</td></tr>
+          <tr><th scope="row" data-en="Data analysis">데이터 분석</th><td class="is-us" data-en="Emotional trend analysis">감정 추이 분석</td><td data-en="Fragmentary records">단편적 기록 분석</td><td data-en="Static result (a score)">정적 결과 통보 (점수/결과)</td><td data-en="Clinical data first">의료 데이터 중심</td></tr>
+          <tr><th scope="row" data-en="Value for caregivers">보호자 가치</th><td class="is-us" data-en="Report with actionable guidance">행동 가이드형 리포트</td><td data-en="Read the records">기록 열람</td><td data-en="Result notification">결과 통보</td><td data-en="Management / referral">관리 / 연동 중심</td></tr>
+          <tr><th scope="row" data-en="Differentiator">차별점</th><td class="is-us" data-en="Preventive daily care">예방형 데일리 케어</td><td data-en="Record-keeping">기록</td><td data-en="Diagnosis / screening">진단 / 검사</td><td data-en="Management / treatment support">관리 / 치료 보조</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="table-hint reveal" data-en="Swipe the table sideways &lt;span aria-hidden=&quot;true&quot;&gt;→&lt;/span&gt;">표를 좌우로 밀어서 보세요 <span aria-hidden="true">→</span></p>
+
+    <div class="grid grid--2 gap-lg">
+      <div class="card card--insight card--insight--gap reveal">
+        <p class="pill pill--gray" data-en="Record-first care (one-way) → no reason to keep coming back">기록 중심 케어 (단방향) → 자발적·지속적 사용 불가</p>
+        <p class="pill pill--gray" data-en="Text and complex UI → children cannot get in">텍스트 및 복잡한 UI → 아동 진입 불가</p>
+        <p class="card--insight__punch is-warn" data-en="&ldquo;No care solution is built around the child&rdquo;">“아동 중심의 케어 솔루션 부재”</p>
+      </div>
+      <div class="card card--insight reveal">
+        <p class="pill pill--blue" data-en="Counselling as a game → care through play, with nothing to resist">상담의 게임화 → 거부감 없는 ‘놀이형 케어’</p>
+        <p class="pill pill--blue" data-en="Multimodal AI → the literacy barrier disappears (voice)">멀티모달 AI 도입 → 문해력 장벽 해소 (음성 소통)</p>
+        <p class="card--insight__punch is-good" data-en="&ldquo;A durable edge built on children who come back&rdquo;">“아동 리텐션 기반의 차별적 경쟁 우위 확보”</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BUSINESS ============ -->
+<section class="section section--tint" id="business">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="sec-head__tag">Business Model</p>
+      <h2 class="sec-head__title" data-en="Business model">비즈니스 모델</h2>
+      <p class="sec-head__desc" data-en="A B2C subscription at the core, extending into B2G and B2B licensing.">B2C 구독을 기반으로 B2G·B2B 라이선스로 확장합니다.</p>
+    </header>
+
+    <div class="plans">
+      <article class="card plan reveal">
+        <p class="plan__badge plan__badge--b2c">B2C</p>
+        <h3>Basic</h3>
+        <p class="plan__price" data-en="Free">무료</p>
+        <ul>
+          <li data-en="1 child profile (standard)">자녀 프로필 1개 (기본)</li>
+          <li data-en="Standard characters and missions">기본 캐릭터 / 기본 미션 (표준 콘텐츠)</li>
+          <li data-en="Limited live AI voice conversation (about 5 minutes)">제한된 실시간 AI 음성 대화 (약 5분)</li>
+          <li data-en="Weekly summary report for caregivers (basic)">보호자 주간 요약 리포트 (기본형)</li>
+          <li data-en="Recent history (limited retention)">최근 기록 / 히스토리 열람 (기간 제한)</li>
+        </ul>
+      </article>
+
+      <article class="card plan plan--hi reveal">
+        <p class="plan__badge plan__badge--b2c">B2C</p>
+        <h3>Premium</h3>
+        <p class="plan__price" data-en="20,000&lt;em&gt;KRW / month&lt;/em&gt;">20,000<em>원 / 월</em></p>
+        <ul>
+          <li data-en="Unlimited voice counselling content">무제한 음성 상담 콘텐츠 제공</li>
+          <li data-en="Every character, with customisation">모든 캐릭터 사용 및 커스터마이징 지원</li>
+          <li data-en="Emotional trend analysis (speech plus tone and pace) and long-term trends">감정 추이 분석 (발화 + 음성 톤/속도) &amp; 장기 트렌드</li>
+          <li data-en="Actionable caregiver reports (daily and weekly)">보호자 실행 가이드형 리포트 (일간/주간)</li>
+          <li data-en="Multi-child options (family plan / extra slots)">다자녀 확장 옵션 (가족 플랜 / 추가 슬롯 연계)</li>
+        </ul>
+        <p class="plan__addon" data-en="&lt;b&gt;Add-on&lt;/b&gt; 5,000 KRW per extra child per month · content packs 20,000 KRW each">
+          <b>Add-On</b>
+          자녀 추가 1인당 5,000원/월 · 콘텐츠 팩 20,000원/건
+        </p>
+      </article>
+
+      <article class="card plan reveal">
+        <p class="plan__badge plan__badge--b2g">B2G</p>
+        <h3>Rebreathe Edu</h3>
+        <p class="plan__price" data-en="12M&lt;em&gt;KRW / year&lt;/em&gt;">1,200<em>만원 / 연</em></p>
+        <p class="plan__for" data-en="For municipal care centres and educational institutions">지자체 돌봄센터 및 교육기관 대상</p>
+        <ul>
+          <li data-en="Emotional risk monitoring for children in their care">소속 아동 정서 리스크 모니터링 시스템</li>
+          <li data-en="Dashboard for early identification and alerts on children at risk">위기 아동 조기 발굴 및 알림 대시보드 제공</li>
+          <li data-en="Admin pages for teachers and counsellors">교사 및 상담사 전용 관리자 페이지 지원</li>
+        </ul>
+      </article>
+
+      <article class="card plan reveal">
+        <p class="plan__badge plan__badge--b2b">B2B</p>
+        <h3>Rebreathe EAP</h3>
+        <p class="plan__price" data-en="30M&lt;em&gt;KRW / year&lt;/em&gt;">3,000<em>만원 / 연</em></p>
+        <p class="plan__for" data-en="For family-friendly certified companies and employers investing in benefits">가족 친화 인증기업 및 사내 복지 도입 기업 대상</p>
+        <ul>
+          <li data-en="Mental care package for employees&rsquo; children">기업 임직원 자녀 멘탈케어 패키지 제공</li>
+          <li data-en="Parenting-stress management for employees">임직원 대상 양육 스트레스 관리 솔루션</li>
+          <li data-en="Tailored integrated wellbeing reporting for the employer">기업 맞춤형 임직원 복지 통합 리포트 발행</li>
+        </ul>
+      </article>
+    </div>
+
+    <!-- 마케팅 -->
+    <header class="sec-head sec-head--sub reveal">
+      <h3 class="sec-head__title sec-head__title--sm" data-en="Marketing strategy">마케팅 전략</h3>
+    </header>
+    <div class="grid grid--2 gap-lg">
+      <article class="card card--mkt reveal">
+        <p class="pill pill--blue">B2C Channel</p>
+        <h4 data-en="Built around parenting communities">맘카페 중심 마케팅</h4>
+        <dl>
+          <dt data-en="Targeting">타겟팅</dt><dd data-en="Regional parenting communities with the highest engagement in education and emotional care">자녀 교육열 및 정서 케어 관여도가 높은 핵심 지역 맘카페</dd>
+          <dt data-en="Channel">채널 전략</dt><dd data-en="Partnerships with large regional communities and a child mental-care trial programme">지역 대형 맘카페 제휴 및 ‘자녀 심리 케어 체험단’ 운영</dd>
+          <dt data-en="Message">핵심 메시지</dt><dd data-en="A clinically validated professional solution — earning parents&rsquo; trust">임상적 검증을 거친 ‘전문 솔루션’으로 학부모 신뢰 확보</dd>
+        </dl>
+        <ol class="steps">
+          <li data-en="Recruit trial families">체험단 모집</li><li data-en="Prove the benefit">효용 입증</li><li data-en="Generate positive reviews">긍정적 후기 생성</li><li data-en="Community word of mouth">커뮤니티 2차 확산</li>
+        </ol>
+      </article>
+
+      <article class="card card--mkt reveal">
+        <p class="pill pill--sand">B2G Channel</p>
+        <h4 data-en="Kick-starting the asset store">에셋 스토어 초기 활성화 전략</h4>
+        <dl>
+          <dt data-en="Targeting">타겟팅</dt><dd data-en="3D and media artists who need a steady new channel for IP revenue">안정적인 새로운 IP 수익 판로가 필요한 3D / 미디어 아티스트</dd>
+          <dt data-en="Channel">채널 전략</dt><dd data-en="Partnerships with artist communities, plus open calls with prize money to attract creators">아티스트 커뮤니티 제휴 및 공모전 개최 / 상금 통한 창작자 확보</dd>
+          <dt data-en="Message">핵심 메시지</dt><dd data-en="An open ecosystem for art IP that fixes the mismatch between supply and demand">수요와 공급의 한계를 해결하는 ‘예술 IP 오픈 생태계’ 도입</dd>
+        </dl>
+        <ol class="steps steps--sand">
+          <li data-en="Open call / promotion">공모전 / 프로모션</li><li data-en="Secure assets, settle revenue">에셋 확보 및 수익 정산</li><li data-en="An artistic ecosystem">예술적 생태계 확보</li>
+        </ol>
+      </article>
+    </div>
+
+    <!-- 로드맵 -->
+    <header class="sec-head sec-head--sub reveal">
+      <h3 class="sec-head__title sec-head__title--sm" data-en="Scale-up and roadmap">스케일업 &amp; 로드맵</h3>
+    </header>
+
+    <div class="card roadmap reveal">
+      <div class="roadmap__chart">
+        <p class="roadmap__unit" data-en="(unit: KRW million)">(단위: 백만원)</p>
+
+        <div class="roadmap__plot">
+          <svg viewBox="0 0 600 220" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="rgFill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#4a9ff0" stop-opacity=".34" />
+                <stop offset="100%" stop-color="#4a9ff0" stop-opacity="0" />
+              </linearGradient>
+            </defs>
+            <path class="roadmap__grid" d="M0 40H600M0 95H600M0 150H600M0 205H600" />
+            <path class="roadmap__area"
+                  d="M50 205 L50 204.3 L150 201.4 L250 188.8 L350 165.4 L450 95.6 L550 24 L550 205 Z"
+                  fill="url(#rgFill)" />
+            <path class="roadmap__line"
+                  d="M50 204.3 L150 201.4 L250 188.8 L350 165.4 L450 95.6 L550 24" />
+          </svg>
+
+          <ul class="roadmap__points">
+            <li style="--x:8.333%;  --y:92.9%"><b>240</b></li>
+            <li style="--x:25%;     --y:91.5%"><b>1,260</b></li>
+            <li style="--x:41.667%; --y:85.8%"><b>5,640</b></li>
+            <li style="--x:58.333%; --y:75.2%"><b>13,800</b></li>
+            <li style="--x:75%;     --y:43.5%"><b>38,080</b></li>
+            <li style="--x:91.667%; --y:10.9%"><b>63,000</b></li>
+          </ul>
+        </div>
+
+        <ul class="roadmap__years">
+          <li>2027</li><li>2028</li><li>2029</li>
+          <li>2030</li><li>2031</li><li>2032</li>
+        </ul>
+      </div>
+
+      <div class="roadmap__phases">
+        <article>
+          <p class="roadmap__when">2026–27</p>
+          <h4 data-en="Validating B2C">B2C 검증</h4>
+          <p class="roadmap__rev" data-en="KRW 240M">2.4억원</p>
+          <ul><li data-en="Launch the MVP and win the first users">MVP 런칭 및 초기 유저 확보</li><li data-en="Market to parents in their 30s and 40s, and settle the monthly subscription model">3040 학부모 타겟 마케팅 및 월 구독형 수익 모델 안착</li><li data-en="Reach 1,000 subscribers">구독자 1,000명 달성</li></ul>
+        </article>
+        <article>
+          <p class="roadmap__when">2028</p>
+          <h4 data-en="Entering B2G">B2G 진입</h4>
+          <p class="roadmap__rev" data-en="KRW 1.26B">12.6억원</p>
+          <ul><li data-en="Pilot with the Blue Tree Foundation">푸른나무재단 시범 도입</li><li data-en="Build public-sector references">공공기관 레퍼런스 확보</li><li data-en="Grow to 5,000 B2C subscribers">B2C 구독자 5,000명 확장</li></ul>
+        </article>
+        <article>
+          <p class="roadmap__when">2029–30</p>
+          <h4 data-en="Going global">글로벌 확장</h4>
+          <p class="roadmap__rev" data-en="KRW 13.8B">138억원</p>
+          <ul><li data-en="Comply with global child-privacy regulation and localise">글로벌 아동 개인정보 규제 준수 및 현지화</li><li data-en="License into the North American market">북미 시장 라이선스 진출</li><li data-en="Extend the service to adolescents">청소년 대상 서비스 확장</li><li data-en="Reach 1% of SOM">SOM 1% 점유율 달성</li></ul>
+        </article>
+        <article>
+          <p class="roadmap__when">2031–32</p>
+          <h4 data-en="B2B EAP">B2B EAP</h4>
+          <p class="roadmap__rev" data-en="KRW 63B">630억원</p>
+          <ul><li data-en="An EAP solution caring for employees&rsquo; children">기업 임직원 자녀 케어 (EAP) 솔루션</li><li data-en="Secure overseas running royalties">해외 러닝 로열티 확보</li><li data-en="Build a lifelong mental care ecosystem">전생애 멘탈 케어 생태계 구축</li></ul>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TEAM / COMPANY ============ -->
+<section class="section" id="team">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="sec-head__tag">Team</p>
+      <h2 class="sec-head__title" data-en="Team and advisors">팀 &amp; 자문위원</h2>
+    </header>
+
+    <div class="grid grid--2 gap-lg">
+      <article class="card person reveal">
+        <figure class="person__photo">
+          <img src="assets/img/team/ceo-yoo-junoh.jpg" alt="리브리드 대표 유준오" data-en-alt="Yoo Junoh, CEO of REBREATHE" loading="lazy" width="336" height="375" />
+        </figure>
+        <p class="person__role" data-en="CEO and VR development">CEO &amp; 가상현실 개발</p>
+        <h3 data-en="Yoo Junoh">유준오</h3>
+        <ul>
+          <li data-en="&lt;b&gt;CEO, Rebreathe&lt;/b&gt;"><b>리브리드(Rebreathe) 대표</b></li>
+          <li data-en="Adjunct professor, Game Design, Sungkyunkwan University (AI and interactive media)">성균관대학교 게임디자인학과 겸임교수 (AI &amp; 인터렉티브 미디어)</li>
+          <li data-en="Visiting professor, Software Convergence, Hanyang University (interactive multimedia)">한양대학교 소프트웨어융합학과 객원교수 (인터랙티브 멀티미디어)</li>
+          <li data-en="Visiting professor, Digital Media Design, Cheongju University (interaction design)">청주대학교 디지털미디어디자인학부 객원교수 (인터렉션 디자인)</li>
+          <li data-en="Technical development mentor, Art and Technology, Chung-Ang University (Unreal Engine)">중앙대학교 예술공학부 기술 개발 멘토 (언리얼 엔진 개발)</li>
+          <li data-en="Adjunct professor, Game Studies, Dongyang University (game animation studio)">동양대학교 게임학부 겸임교수 (게임 애니메이션 스튜디오)</li>
+          <li data-en="M.P.S., Interactive Telecommunications Program, New York University (full scholarship)">뉴욕대학교 인터렉티브 텔레커뮤니케이션학과 공학 석사 졸업 (전액장학)</li>
+          <li data-en="B.F.A., Sculpture and Extended Media, Virginia Commonwealth University (cum laude)">버지니아 커먼웰스대학교 융합조소과 예술학사 졸업 (준우등)</li>
+        </ul>
+      </article>
+
+      <article class="card person reveal">
+        <figure class="person__photo">
+          <img src="assets/img/team/dev-kim-seongmin.jpg" alt="리브리드 개발 본부장 김성민" data-en-alt="Kim Seongmin, Head of Engineering at REBREATHE" loading="lazy" width="340" height="351" />
+        </figure>
+        <p class="person__role" data-en="Head of Engineering">개발 본부장</p>
+        <h3 data-en="Kim Seongmin">김성민</h3>
+        <ul>
+          <li data-en="&lt;b&gt;Head of Engineering, Rebreathe&lt;/b&gt;"><b>리브리드(Rebreathe) 개발 본부장</b></li>
+          <li data-en="Built a proprietary Ethereum-based mainnet">이더리움 기반 자체 메인넷 개발 경험</li>
+          <li data-en="Built an IPFS and blockchain security solution for academic records">IPFS-블록체인 활용 성적 데이터 보안 솔루션 개발</li>
+          <li data-en="Built an AI counselling chatbot for an education platform">교육 플랫폼 AI 상담 챗봇 개발</li>
+          <li data-en="B.S., Software and Physics, Ajou University">아주대학교 소프트웨어/물리 학사 졸업</li>
+        </ul>
+      </article>
+
+      <article class="card person reveal">
+        <figure class="person__photo">
+          <img src="assets/img/team/artist-kim-donghan.jpg" alt="대표 참여 작가 김동한" data-en-alt="Kim Donghan, lead participating artist" loading="lazy" width="327" height="339" />
+        </figure>
+        <p class="person__role" data-en="Lead artist · façade and sound">대표 참여 작가 · 파사드 &amp; 사운드</p>
+        <h3 data-en="Kim Donghan">김동한</h3>
+        <ul>
+          <li data-en="&lt;b&gt;Interactive and laser director, &lt;i&gt;Haslla Four Seasons&lt;/i&gt;&lt;/b&gt;"><b>&lt;하슬라 사계&gt; 인터랙티브 및 레이저 감독</b></li>
+          <li data-en="Sound and laser director, Seoul Light Gwanghwamun &lt;i&gt;Feast of Light&lt;/i&gt;">서울 라이트 광화문 &lt;빛의 향연&gt; 사운드 및 레이저 감독</li>
+          <li data-en="Art director, 17th Baekje Cultural Festival">제17회 백제문화제 아트디렉터</li>
+          <li data-en="Art director, Blue House Youth Day &lt;i&gt;Youth Is Here&lt;/i&gt;">청와대 청년의 날 &lt;청년이있어&gt; 아트 디렉터</li>
+          <li data-en="Sound director, &lt;i&gt;Eternal Touch&lt;/i&gt;, A Museum, Philippines">필리핀 에이뮤지엄 &lt;이터널 터치&gt; 사운드 감독</li>
+          <li data-en="Sound director, Asiana × UNICEF 30th anniversary &lt;i&gt;Blue Light&lt;/i&gt;">아시아나 유니세프 30주년 &lt;블루라이트&gt; 사운드 감독</li>
+          <li data-en="B.A., Sound Production, Korea National University of Arts and Media">한국영상대학교 음향제작과 학사 졸업</li>
+          <li data-en="M.A. candidate (on leave), Seoul Media Institute of Technology">SMIT 서울미디어대학원 석사 휴학</li>
+        </ul>
+      </article>
+
+      <article class="card person reveal">
+        <figure class="person__photo">
+          <img src="assets/img/team/artist-shin-eunsong.jpg" alt="대표 참여 작가 신은송" data-en-alt="Shin Eunsong, lead participating artist" loading="lazy" width="327" height="338" />
+        </figure>
+        <p class="person__role" data-en="Lead artist · sound engineer">대표 참여 작가 · 사운드 엔지니어</p>
+        <h3 data-en="Shin Eunsong">신은송</h3>
+        <ul>
+          <li data-en="&lt;b&gt;Researcher, Sound Lab, Asia Culture Center&lt;/b&gt;"><b>국립아시아문화전당 사운드랩 연구원</b></li>
+          <li data-en="Sound installation mentor, Digital Art Culture Lab 2025">2025 디지털 아트 컬처랩 사운드 설치 멘토링</li>
+          <li data-en="Composer and sound designer, d&rsquo;strict / Dotmill">닷밀 음악 작곡 및 사운드 디자이너</li>
+          <li data-en="B.M., Composition, Chugye University for the Arts">추계예술대학교 음악대학 작곡 전공 학사 졸업</li>
+          <li data-en="M.M., Computer Music, Music Technology, Korea National University of Arts">한국예술종합학교 대학원 음악테크놀로지과 컴퓨터작곡 전문사(석사) 졸업</li>
+        </ul>
+      </article>
+    </div>
+
+    <h3 class="sec-head__title sec-head__title--sm reveal mt" data-en="Advisory board">자문위원단</h3>
+
+    <div class="grid grid--3 gap-lg">
+      <article class="card person person--adv reveal">
+        <figure class="person__photo person__photo--adv">
+          <img src="assets/img/team/adv-baek-jongwoo.jpg" alt="자문위원 백종우 교수" data-en-alt="Advisor Professor Baek Jongwoo" loading="lazy" width="309" height="355" />
+        </figure>
+        <p class="person__role" data-en="Psychiatrist">정신의학과 전문의</p>
+        <h3 data-en="Prof. Baek Jongwoo">백종우 교수</h3>
+        <ul>
+          <li data-en="&lt;b&gt;Professor of Psychiatry, Kyung Hee University&lt;/b&gt;"><b>경희대학교 정신의학과 교수</b></li>
+          <li data-en="Director, Korea Suicide Prevention Center">중앙 자살예방 센터장</li>
+          <li data-en="President, Korean Society for Traumatic Stress Studies">한국 트라우마 스트레스 학회장</li>
+          <li data-en="Chair of Disaster Mental Health, Korean Neuropsychiatric Association">대한신경정신의학회 재난정신건강위원장</li>
+          <li data-en="Chair of advisors, National Assembly Suicide Prevention Forum">국회자살예방포럼 자문위원장</li>
+          <li data-en="Ph.D. and M.S. in Medicine, Korea University Graduate School">고려대학교 대학원 의학과 졸업 (의학박사·의학석사)</li>
+        </ul>
+      </article>
+
+      <article class="card person person--adv reveal">
+        <figure class="person__photo person__photo--adv">
+          <img src="assets/img/team/adv-lee-jongmin.jpg" alt="자문위원 이종민 교수" data-en-alt="Advisor Professor Lee Jongmin" loading="lazy" width="309" height="355" />
+        </figure>
+        <p class="person__role" data-en="Rehabilitation medicine specialist">재활치료의학과 전문의</p>
+        <h3 data-en="Prof. Lee Jongmin">이종민 교수</h3>
+        <ul>
+          <li data-en="&lt;b&gt;Professor of Rehabilitation Medicine, Konkuk University&lt;/b&gt;"><b>건국대학교 재활의학과 교수</b></li>
+          <li data-en="Director, Institute of Biomedical Science and Technology, Konkuk University">건국대학교 의생명과학 연구원 원장</li>
+          <li data-en="Director, International Healthcare Research Institute, Konkuk University">건국대학교 국제의료 연구소 소장</li>
+          <li data-en="Ph.D. and M.S. in Medicine, Seoul National University Graduate School">서울대학교 대학원 의학과 졸업 (의학박사·의학석사)</li>
+          <li data-en="M.D., Seoul National University College of Medicine">서울대학교 의학대학 의학과 졸업 (의학사)</li>
+        </ul>
+      </article>
+
+      <article class="card person person--adv reveal">
+        <figure class="person__photo person__photo--adv">
+          <img src="assets/img/team/adv-seo-yeonju.jpg" alt="자문위원 서연주 전문의" data-en-alt="Advisor Dr. Seo Yeonju" loading="lazy" width="315" height="355" />
+        </figure>
+        <p class="person__role" data-en="Gastroenterologist">소화기 내과 전문의</p>
+        <h3 data-en="Dr. Seo Yeonju">서연주 전문의</h3>
+        <ul>
+          <li data-en="&lt;b&gt;Deputy director and gastroenterologist, Myeong Diagnostic Imaging Center&lt;/b&gt;"><b>명진단영상검진센터 소화기내과 전문의 부원장</b></li>
+          <li data-en="Director of gastroenterology, Woori Best Internal Medicine Clinic">우리 베스트내과 소화기내과 원장</li>
+          <li data-en="Gastroenterologist, Yeouido St. Mary&rsquo;s Hospital">여의도성모병원 소화기내과 전문의</li>
+          <li data-en="Internal medicine hospitalist, Emergency Medical Center, St. Vincent&rsquo;s Hospital, Catholic University">가톨릭대학교 성빈센트병원 응급 의료센터 내과 전담의</li>
+          <li data-en="M.D., Catholic University of Korea School of Medicine">가톨릭대학교 의학전문대학원 의학 전문석사 졸업</li>
+          <li data-en="B.S., Biological Sciences, KAIST">한국과학기술원(KAIST) 생물학 졸업</li>
+        </ul>
+      </article>
+    </div>
+
+    <!-- 창업 배경 -->
+    <div class="card origin reveal">
+      <figure class="origin__photo">
+        <img src="assets/img/founder-childhood.jpg" alt="바닷가에 서 있는 대표의 유년기 모습" data-en-alt="The founder as a child, standing by the sea" loading="lazy" width="603" height="692" />
+        <figcaption data-en="&amp;lt;The founder as a child&amp;gt;">&lt;대표 본인의 유년기 모습&gt;</figcaption>
+      </figure>
+      <p class="tagline" data-en="Why we started">창업 배경</p>
+      <h3 data-en="A survivor&rsquo;s own story">생존자의 실제 이야기</h3>
+      <ul>
+        <li data-en="REBREATHE began with the founder&rsquo;s own mental health crisis.">리브리드는 대표 본인의 실제 정신건강 위기 경험에서 시작되었습니다.</li>
+        <li data-en="From childhood into adolescence, he lived through sustained social exclusion at school, including group beatings and bullying.">대표는 유년기부터 청소년기까지 학내 집단 구타와 따돌림 등 지속적인 사회적 소외를 경험했습니다.</li>
+        <li data-en="That left years of psychological pain and crisis: nine suicide attempts, beginning with the first at the age of nine.">이로 인해 장기간의 정신적 고통과 위기 상황을 겪었으며, 9세의 첫 자살 시도를 시작으로 총 9회의 자살 시도를 경험했습니다.</li>
+        <li data-en="It also led to the question at the centre of REBREATHE: &lt;b&gt;&ldquo;In the moment of crisis, who will actually listen to me?&rdquo;&lt;/b&gt;">이 경험은 <b>“위기의 순간에 정말 누가 내 이야기를 들어줄까?”</b>라는 리브리드의 핵심 질문으로 이어졌습니다.</li>
+        <li data-en="In 2021 he began VR-HOTLINE, reading that survival through art and technology, founding a non-profit in the United States and raising $20,000 in crowdfunding.">2021년, 개인의 생존 경험을 예술과 기술로서 해석한 VR-HOTLINE 프로젝트를 시작으로 미국 내에서 비영리 단체 설립 및 클라우드 펀딩 $20,000 모집을 달성했습니다.</li>
+        <li data-en="Starting from Korea&rsquo;s 2025 Pre-Startup Package, REBREATHE is now growing beyond crisis counselling for young adults into a &lt;b&gt;preventive AI mental care solution for children&lt;/b&gt; — catching the signals early and bringing caregivers in before a crisis arrives.">현재 리브리드는 2025년 예비창업패키지를 시작으로, 청년 중심의 위기 순간의 상담을 넘어, 유소년이 위기에 도달하기 전 마음의 신호를 발견하고 보호자와 함께 개입할 수 있는 <b>아동 예방형 AI 멘탈케어 솔루션</b>으로 확장하고 있습니다.</li>
+      </ul>
+      <p class="origin__quote" data-en="&ldquo;REBREATHE starts from the founder&rsquo;s survival, and builds mental health infrastructure so that everyone can breathe again.&rdquo;">“리브리드는 대표의 생존 경험에서 출발해, 모두가 다시 호흡할 수 있는 정신건강 인프라를 만듭니다.”</p>
+      <p class="origin__help" data-en="If things feel heavy right now, please don&rsquo;t carry it alone — in Korea, the &lt;b&gt;suicide prevention line is 109&lt;/b&gt; (24 hours) and &lt;b&gt;youth counselling is 1388&lt;/b&gt;. Outside Korea, contact your local crisis line.">
+        지금 힘든 마음이 든다면 혼자 견디지 마세요 —
+        <b>자살예방 상담전화 109</b> (24시간) · <b>청소년 상담 1388</b>
+      </p>
+    </div>
+
+    <!-- 회사 개요 -->
+    <h3 class="sec-head__title sec-head__title--sm reveal mt" data-en="Company">기업 개요</h3>
+
+    <div class="company">
+      <div class="card reveal">
+        <table class="info">
+          <caption class="sr-only" data-en="REBREATHE company information">리브리드 기업 정보</caption>
+          <tbody>
+            <tr><th scope="row" data-en="Company">회사명</th><td data-en="Rebreathe (incorporating in September)">리브리드 (9월 법인전환)</td></tr>
+            <tr><th scope="row" data-en="Founded">설립일</th><td data-en="3 June 2025">2025년 06월 03일</td></tr>
+            <tr><th scope="row" data-en="CEO">대표이사</th><td data-en="Yoo Junoh">유준오</td></tr>
+            <tr><th scope="row" data-en="Business">주요사업</th><td data-en="AI-based mental care services, virtual reality content development">AI 기반 멘탈 케어 서비스, 가상현실 콘텐츠 개발</td></tr>
+            <tr><th scope="row" data-en="Product">주요제품</th><td data-en="REBREATHE mental health care solution">REBREATHE 멘탈 헬스 케어 솔루션</td></tr>
+            <tr><th scope="row" data-en="Address">소재지</th><td data-en="T-109, 1F, 182 Hyanggi-ro, Deogyang-gu, Goyang-si, Gyeonggi-do, Republic of Korea">경기도 고양시 덕양구 향기로 182, 1층 T-109호</td></tr>
+            <tr><th scope="row" data-en="Contact">문의</th><td><a href="mailto:rebreathe.starground@gmail.com">rebreathe.starground@gmail.com</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <ol class="history card reveal">
+        <li>
+          <b>2026</b>
+          <ul>
+            <li data-en="MOU under discussion with the Blue Tree Foundation">푸른나무재단 MOU 협의 중</li>
+            <li data-en="MOU under discussion with Mindful Connect">마인드풀커넥트 MOU 협의 중</li>
+            <li data-en="Incorporating as a stock company in September">9월 주식회사(법인) 전환 예정</li>
+          </ul>
+        </li>
+        <li>
+          <b>2025</b>
+          <ul>
+            <li data-en="Rebreathe founded">리브리드 설립</li>
+            <li data-en="Selected for the Pre-Startup Package, Ministry of SMEs and Startups">중소기업벤처부 예비창업패키지 선정</li>
+            <li data-en="Advisory board appointed">자문위원단 위촉</li>
+          </ul>
+        </li>
+        <li>
+          <b>2023</b>
+          <ul>
+            <li data-en="MOU signed with PICO (world&rsquo;s No.2 HMD maker, a TikTok subsidiary)">PICO (세계 2위 HMD 제작사, TikTok 자회사) MOU 체결</li>
+            <li data-en="Patent filed — method and system for raising a digital creature that interacts with a user">특허 출원 — 사용자와 상호작용하는 디지털 크리쳐 육성 방법 및 그 시스템</li>
+          </ul>
+        </li>
+        <li>
+          <b>2022</b>
+          <ul>
+            <li data-en="Founded the non-profit VR-HOTLINE, United States">비영리 단체 VR-HOTLINE 조성 / 미국</li>
+            <li data-en="Master&rsquo;s thesis — developing a virtual reality platform for suicide prevention">석사 논문 — 자살 예방 가상 현실 플랫폼 개발</li>
+          </ul>
+        </li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section class="closing" id="contact">
+  <div class="wrap closing__inner">
+    <blockquote class="closing__quote reveal">
+      <p lang="en">“There is no such thing as a baby.”</p>
+      <p data-en="A baby alone does not exist.">아기 혼자라는 것은 존재하지 않습니다.</p>
+      <cite>— D. W. Winnicott</cite>
+    </blockquote>
+
+    <div class="closing__body reveal">
+      <p data-en="A child&rsquo;s heart does not break alone.&lt;br /&gt;And it does not heal alone either.">아이의 마음은 혼자서 무너지지 않습니다.<br />그리고 혼자서만 회복되는 것도 아닙니다.</p>
+      <p data-en="We do not grade children.&lt;br /&gt;We do not blame parents.&lt;br /&gt;We build the structure that lets a child and a caregiver find each other again.">우리는 아이를 평가하지 않습니다.<br />부모를 비난하지 않습니다.<br />아이와 보호자가 다시 연결될 수 있는 구조를 만듭니다.</p>
+      <p class="closing__punch" data-en="Protect these children with us.&lt;br /&gt;&lt;b&gt;REBREATHE will be right there with you.&lt;/b&gt;">저희와 함께, 아이들을 지켜주세요.<br /><b>리브리드가 함께 하겠습니다.</b></p>
+    </div>
+
+    <div class="closing__contact reveal">
+      <a class="btn btn--primary" href="mailto:rebreathe.starground@gmail.com">rebreathe.starground@gmail.com</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap foot__inner">
+    <p data-en="&lt;b&gt;REBREATHE&lt;/b&gt; · CEO Yoo Junoh"><b>리브리드 (REBREATHE)</b> · 대표 유준오</p>
+    <p data-en="T-109, 1F, 182 Hyanggi-ro, Deogyang-gu, Goyang-si, Gyeonggi-do, Republic of Korea">경기도 고양시 덕양구 향기로 182, 1층 T-109호</p>
+    <p class="foot__note" data-en="This site is based on the REBREATHE IR materials.">본 사이트의 내용은 리브리드 IR 자료를 기반으로 구성되었습니다.</p>
+  </div>
+</footer>
+
+<button class="totop" id="toTop" aria-label="맨 위로" data-en-aria-label="Back to top">↑</button>
+
+<script src="assets/js/i18n.js"></script>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/game.js"></script>
+</body>
+</html>
