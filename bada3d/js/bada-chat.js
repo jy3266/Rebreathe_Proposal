@@ -8,6 +8,7 @@
 import { CONFIG } from './config.js';
 import { createBridge } from './ue-bridge.js';
 import { createMic } from './voice.js';
+import { renderReport } from './report-view.js';
 
 const KO = CONFIG.lang === 'ko';
 const T = (ko, en) => (KO ? ko : en);
@@ -37,6 +38,16 @@ const el = {
   startOverlay: document.getElementById('start-overlay'),
   micPick: document.getElementById('mic-pick'),
   micSelect: document.getElementById('mic-select'),
+  startForm: document.getElementById('start-form'),
+  email: document.getElementById('report-email'),
+  consent: document.getElementById('report-consent'),
+  startError: document.getElementById('start-error'),
+  finish: document.getElementById('finish-btn'),
+  reportPanel: document.getElementById('report-panel'),
+  reportStatus: document.getElementById('report-status'),
+  reportBody: document.getElementById('report-body'),
+  reportClose: document.getElementById('report-close'),
+  reportAgain: document.getElementById('report-again'),
 };
 
 // Static page text: Korean in the HTML, English in data-en / data-en-* attributes.
@@ -99,6 +110,7 @@ function setStatus(s, extra) {
 const IDLE_END_MS = 5 * 60 * 1000;
 let started = false;
 let walkEnded = false;
+let finished = false; // "산책 마치기": the conversation is over, never listen again
 let lastActivity = Date.now();
 const touch = () => { lastActivity = Date.now(); };
 
@@ -116,7 +128,10 @@ function endWalk(reason) {
     : T('한동안 조용해서 3D 산책을 멈췄어요. 다시 걸으려면 아래 버튼을 눌러 주세요.',
       'It was quiet for a while, so the 3D walk paused. Press below to walk again.');
   el.start.textContent = T('🎤 다시 걷기', '🎤 Walk again');
+  el.startForm.classList.add('is-again');
   el.startOverlay.hidden = false;
+  // The walk is over: the caregiver who gave an email still gets the report.
+  if (reportEmail && reportState === 'idle' && childTurns() >= 1) finishWalk();
 }
 
 if (CONFIG.stream === 'e3ds') {
@@ -245,7 +260,7 @@ function stopSpeaking() {
 
 // Once Bada has finished (reply fully streamed and spoken), it is the child's turn again.
 function afterBadaTurn() {
-  if (replyStreaming || speaking > 0) return;
+  if (finished || replyStreaming || speaking > 0) return;
   if (!mic) {
     setState('nomic');
     return;
@@ -277,6 +292,7 @@ function takeSentences(buffer, flush) {
 // ---------- Speech in ----------
 
 function listen() {
+  if (finished) return;
   if (!mic) {
     setState('nomic');
     return;
@@ -520,6 +536,7 @@ navigator.mediaDevices?.addEventListener?.('devicechange', () => renderMicPicker
 
 // The mic button: talk over Bada, pause / resume listening, or retry the microphone.
 el.mic.addEventListener('click', async () => {
+  if (finished) return;
   if (state === 'nomic' || !mic) {
     if (await startMic()) listen();
     return;
@@ -570,12 +587,128 @@ window.addEventListener('keydown', (e) => {
   if (SCROLL_KEYS.has(e.key) && !e.target.closest?.('input, textarea, select, button')) e.preventDefault();
 });
 
+// ---------- Caregiver report ----------
+// The optional email given at the start receives the "마음 리포트" (Worker /report) when the walk
+// ends: by "산책 마치기", after a quiet spell in the cloud, or — if the page is simply closed — by a
+// last beacon. Without an email the report is only shown here.
+
+const EMAIL_RE = /^[^\s@<>()"',;:]{1,64}@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)+$/;
+let reportEmail = '';
+let reportState = 'idle'; // idle | working | done
+let lastReport = null;
+const childTurns = () => history.filter((m) => m.role === 'user').length;
+
+function reportStatus(text, kind = '') {
+  el.reportStatus.textContent = text;
+  el.reportStatus.className = 'report__status' + (kind ? ` is-${kind}` : '');
+}
+
+async function finishWalk() {
+  if (reportState === 'working') return;
+  if (reportState === 'done' && lastReport) { el.reportPanel.hidden = false; return; }
+  if (childTurns() < 1) {
+    addBubble('system', T('바다와 한마디라도 나눈 뒤에 리포트를 만들 수 있어요.', 'Say something to Bada first, then I can make the report.'));
+    return;
+  }
+  reportState = 'working';
+  finished = true; // no more listening
+  walkEnded = true; // the quiet-spell timer stops; "다시 걷기" starts over
+  mic?.pause();
+  stopSpeaking();
+  setState('paused');
+  bridge?.send({ bada: 'speak_end' });
+  bridge?.stop?.(); // the cloud stream bills by the minute
+  el.finish.hidden = true;
+  const bye = T('오늘 같이 걸어 줘서 고마워. 네 마음 이야기, 잘 들었어. 또 만나!', 'Thank you for walking with me today. I loved hearing about your day. See you again!');
+  addBubble('assistant', bye);
+  speak(bye);
+
+  el.reportBody.innerHTML = `<div class="report__loading"><i></i>${T('바다와 나눈 이야기를 읽고 마음 리포트를 만들고 있어요… (30초쯤 걸려요)', 'Reading the talk with Bada and writing the heart report… (about 30 seconds)')}</div>`;
+  reportStatus('');
+  el.reportPanel.hidden = false;
+
+  try {
+    const res = await fetch(`${CONFIG.worker}/report`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: reportEmail || undefined, consent: !!reportEmail, lang: CONFIG.lang, messages: history }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data.report) {
+      const err = new Error(data.error || `HTTP ${res.status}`);
+      err.status = res.status;
+      throw err;
+    }
+    lastReport = data.report;
+    el.reportBody.innerHTML = renderReport(data.report, CONFIG.lang);
+    if (data.emailed) reportStatus(T(`📧 ${reportEmail} 로 리포트를 보냈어요.`, `📧 The report was sent to ${reportEmail}.`), 'ok');
+    else if (!reportEmail) reportStatus(T('이메일을 넣지 않아서 이 화면에서만 보여 드려요.', 'No email was given, so the report is shown here only.'));
+    else if (data.mailError === 'not-configured') reportStatus(T('이메일 보내기 설정이 아직 끝나지 않아, 이번에는 이 화면에서만 보여 드려요.', 'Email sending is not set up yet, so this time the report is shown here only.'), 'warn');
+    else reportStatus(T('이메일을 보내지 못했어요. 이 화면의 리포트를 확인해 주세요.', 'The email could not be sent. Please read the report here.'), 'warn');
+    reportState = 'done';
+  } catch (err) {
+    console.error('Report failed', err);
+    reportState = 'idle';
+    el.finish.hidden = false;
+    el.finish.textContent = T('🔁 리포트 다시 만들기', '🔁 Try the report again');
+    el.reportBody.innerHTML = '';
+    reportStatus(err.status === 429
+      ? T('오늘 만들 수 있는 리포트 수를 넘었어요. 내일 다시 해 주세요.', 'The daily report limit was reached. Please try again tomorrow.')
+      : T('리포트를 만들지 못했어요. 잠시 뒤 위의 버튼으로 다시 시도해 주세요.', 'The report could not be made. Please try again in a moment.'), 'warn');
+  }
+}
+
+el.finish?.addEventListener('click', () => {
+  el.finish.blur();
+  finishWalk();
+});
+el.reportClose?.addEventListener('click', () => {
+  el.reportPanel.hidden = true;
+  if (reportState === 'done') {
+    el.finish.hidden = false;
+    el.finish.textContent = T('📄 리포트 보기', '📄 View report');
+  }
+});
+el.reportAgain?.addEventListener('click', () => location.reload());
+
+// Closing the page mid-walk: still send the report to the given email (fire and forget).
+// text/plain keeps it a simple request; a beacon body must stay under ~64 KB.
+addEventListener('pagehide', () => {
+  if (!reportEmail || reportState !== 'idle' || childTurns() < 2) return;
+  let messages = history.slice(-40);
+  let body = JSON.stringify({ email: reportEmail, consent: true, lang: CONFIG.lang, messages });
+  while (new Blob([body]).size > 60000 && messages.length > 4) {
+    messages = messages.slice(4);
+    body = JSON.stringify({ email: reportEmail, consent: true, lang: CONFIG.lang, messages });
+  }
+  if (navigator.sendBeacon?.(`${CONFIG.worker}/report`, new Blob([body], { type: 'text/plain' }))) reportState = 'done';
+});
+
+// Typing the email must not also walk the character (Pixel Streaming reads keys on `document`).
+['keydown', 'keyup', 'keypress'].forEach((type) => el.startForm?.addEventListener(type, (e) => e.stopPropagation()));
+
 // A click is needed before the browser lets the page speak, play the stream or use the mic.
-el.start.addEventListener('click', async () => {
+el.startForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
   if (walkEnded) {
     location.reload(); // a fresh walk: new stream session, new conversation
     return;
   }
+  const email = el.email.value.trim();
+  const problem = email && !EMAIL_RE.test(email)
+    ? T('이메일 주소를 다시 확인해 주세요.', 'Please check the email address.')
+    : email && !el.consent.checked
+      ? T('리포트를 받으려면 동의에 체크해 주세요. 받지 않으려면 이메일 칸을 비워 두세요.', 'To get the report, please tick the consent box. Leave the email empty to skip it.')
+      : '';
+  if (problem) {
+    el.startError.textContent = problem;
+    el.startError.hidden = false;
+    return;
+  }
+  el.startError.hidden = true;
+  reportEmail = email;
+  el.startForm.classList.add('is-again');
+  el.finish.hidden = false;
   started = true;
   touch();
   el.startOverlay.hidden = true;

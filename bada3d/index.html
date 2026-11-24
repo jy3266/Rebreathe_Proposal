@@ -17,7 +17,11 @@
     <aside class="chat" aria-label="바다와 대화" data-en-aria-label="Chat with Bada">
       <header class="chat__head">
         <h1 data-en="Walk with Bada">바다와 함께 걷기</h1>
-        <button id="voice-btn" class="chip" type="button" aria-pressed="true" data-en="🔊 Voice on">🔊 목소리 켬</button>
+        <div class="chat__tools">
+          <!-- Ends the walk and makes the caregiver report (Worker /report) -->
+          <button id="finish-btn" class="chip chip--finish" type="button" hidden data-en="🏁 Finish">🏁 산책 마치기</button>
+          <button id="voice-btn" class="chip" type="button" aria-pressed="true" data-en="🔊 Voice on">🔊 목소리 켬</button>
+        </div>
       </header>
 
       <p id="safety-notice" class="safety" hidden
@@ -50,8 +54,39 @@
         <h2 data-en="Walk with Bada">바다와 함께 걷기</h2>
         <p data-en="Take a walk with Bada and talk about what happened today &lt;b&gt;out loud&lt;/b&gt; — no typing. English or Korean, either is fine.&lt;br&gt;Please turn on your microphone and speakers.">바다와 해변을 걸으며 오늘 있었던 일을 <b>말로</b> 이야기해 보세요. 한국어도, 영어도 좋아요.<br>
            마이크와 스피커를 켜 주세요.</p>
-        <button id="start-btn" class="start__btn" type="button" data-en="🎤 Start the walk">🎤 산책 시작하기</button>
-        <p class="start__fine" data-en="Your voice is turned into text by Cloudflare Workers AI, and Bada&rsquo;s replies are written by AI (Claude). Nothing is recorded or saved by this page.">목소리는 글자로 바꾸는 데에만(Cloudflare Workers AI), 대화 내용은 AI(Claude)가 답을 만드는 데에만 쓰여요. 이 페이지는 녹음이나 대화를 저장하지 않아요.</p>
+        <!-- Optional caregiver email: after the walk, the "마음 리포트" goes there (bada-chat.js finishWalk) -->
+        <form id="start-form" class="start__form" novalidate>
+          <label class="start__field">
+            <span data-en="Caregiver&rsquo;s email for the heart report (optional)">마음 리포트를 받을 보호자 이메일 (선택)</span>
+            <input id="report-email" type="email" inputmode="email" autocomplete="email" maxlength="254"
+                   placeholder="parent@example.com" spellcheck="false">
+          </label>
+          <label class="start__consent">
+            <input id="report-consent" type="checkbox">
+            <span data-en="I am the child&rsquo;s caregiver and agree that, when the walk ends, AI reads the conversation and the report is sent to this address.">보호자이며, 산책이 끝나면 AI가 대화를 읽고 만든 리포트를 이 주소로 받는 데 동의합니다.</span>
+          </label>
+          <p id="start-error" class="start__error" role="alert" hidden></p>
+          <button id="start-btn" class="start__btn" type="submit" data-en="🎤 Start the walk">🎤 산책 시작하기</button>
+        </form>
+        <p class="start__fine" data-en="Your voice is turned into text by Cloudflare Workers AI; the conversation goes to an AI (Claude) to write Bada&rsquo;s replies and the report. The report is a reference, not a diagnosis. This page does not record or store the conversation or your email.">목소리는 글자로 바꾸는 데에만(Cloudflare Workers AI), 대화 내용은 AI(Claude)가 답과 리포트를 만드는 데에만 쓰여요. 리포트는 진단이 아닌 참고 자료예요. 이 페이지는 녹음·대화·이메일을 저장하지 않아요.</p>
+      </div>
+    </div>
+
+    <!-- The caregiver report after "산책 마치기" (report-view.js draws it) -->
+    <div id="report-panel" class="report" role="dialog" aria-modal="true" aria-labelledby="report-title" hidden>
+      <div class="report__sheet">
+        <header class="report__head">
+          <div>
+            <small>REBREATHE</small>
+            <h2 id="report-title" data-en="Today&rsquo;s Heart Report">오늘의 마음 리포트</h2>
+          </div>
+          <button id="report-close" class="chip" type="button" data-en="Close">닫기</button>
+        </header>
+        <p id="report-status" class="report__status" aria-live="polite"></p>
+        <div id="report-body" class="report__body"></div>
+        <div class="report__actions">
+          <button id="report-again" class="start__btn" type="button" data-en="🎤 Walk again">🎤 다시 걷기</button>
+        </div>
       </div>
     </div>
   </main>

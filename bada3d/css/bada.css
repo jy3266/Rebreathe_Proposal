@@ -136,6 +136,95 @@ html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); 
 }
 .start__btn:hover { background: var(--sea-deep); }
 .start__fine { margin: 16px 0 0 !important; font-size: 12px; color: var(--muted) !important; }
+.start__card { max-height: calc(100% - 8px); overflow-y: auto; }
+
+/* Caregiver email (optional) + consent */
+.start__form { display: grid; gap: 10px; text-align: left; }
+.start__field { display: grid; gap: 6px; font-size: 13px; font-weight: 600; color: var(--ink); }
+.start__field input {
+  font: inherit; font-size: 15px; font-weight: 400; padding: 10px 12px;
+  border: 1px solid rgba(0, 0, 0, 0.16); border-radius: 12px; background: #fff; color: var(--ink);
+}
+.start__field input:focus { outline: 2px solid var(--sea); outline-offset: 1px; border-color: transparent; }
+.start__consent { display: flex; gap: 8px; align-items: flex-start; font-size: 12.5px; line-height: 1.5; color: var(--muted); cursor: pointer; }
+.start__consent input { margin-top: 2px; flex: none; width: 16px; height: 16px; accent-color: var(--sea); }
+.start__error { margin: 0 !important; font-size: 13px; color: #b42318 !important; }
+.start__form .start__btn { justify-self: center; margin-top: 4px; }
+/* "다시 걷기": the email is asked only once per walk */
+.start__form.is-again .start__field, .start__form.is-again .start__consent { display: none; }
+
+.chat__tools { display: flex; gap: 6px; align-items: center; }
+.chip--finish { background: #fff3ef; border-color: #f6c1b8; color: #b44a3c; font-weight: 600; }
+.chip--finish:hover { background: #fde6e2; }
+
+/* ---------- Caregiver report (report-view.js) ---------- */
+.report {
+  position: absolute; inset: 0; z-index: 30; display: grid; place-items: center;
+  padding: 16px; background: rgba(6, 20, 30, 0.55); backdrop-filter: blur(3px);
+}
+.report[hidden] { display: none; }
+.report__sheet {
+  width: min(560px, 100%); max-height: 100%; overflow-y: auto;
+  background: #fbf6f1; color: #4a3a33; border-radius: 22px; padding: 18px 16px 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+}
+.report__head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; padding: 2px 4px 8px; }
+.report__head small { font-size: 11px; font-weight: 700; letter-spacing: .12em; color: #f4867a; }
+.report__head h2 { margin: 2px 0 0; font-size: 21px; color: #4a3a33; }
+.report__status { margin: 0 4px 12px; font-size: 13.5px; line-height: 1.5; color: #7a6a60; }
+.report__status.is-ok { color: #2f7d5b; }
+.report__status.is-warn { color: #a35a1c; }
+.report__actions { display: flex; justify-content: center; padding-top: 6px; }
+.report__loading { display: grid; place-items: center; gap: 12px; padding: 40px 10px; text-align: center; color: #7a6a60; font-size: 14px; }
+.report__loading i {
+  width: 38px; height: 38px; border-radius: 50%; border: 4px solid #f6d5cf; border-top-color: #f4867a;
+  animation: rp-spin 1s linear infinite;
+}
+@keyframes rp-spin { to { transform: rotate(360deg); } }
+
+.rp-card { background: #fff; border-radius: 18px; padding: 16px 18px; margin-bottom: 12px; border: 1px solid #f1e8e0; }
+.rp-card__head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 10px; }
+.rp-card h3 { margin: 0; font-size: 16px; color: #4a3a33; }
+.rp-card h4 { margin: 12px 0 4px; font-size: 13.5px; color: #f4867a; }
+.rp-card h4:first-child { margin-top: 0; }
+.rp-card h4.rp-muted { color: #9a8a80; }
+.rp-chip { padding: 3px 10px; border-radius: 999px; background: #ffe8cf; color: #c0632f; font-size: 12px; font-weight: 600; white-space: nowrap; }
+.rp-text, .rp-item p { margin: 4px 0 0; font-size: 14px; line-height: 1.65; }
+.rp-item { padding: 8px 0; border-top: 1px solid #f1e8e0; }
+.rp-item:first-of-type { border-top: 0; padding-top: 2px; }
+.rp-item b { font-size: 14.5px; }
+.rp-quote { color: #f4867a; }
+.rp-say { margin: 6px 0; padding: 9px 12px; background: #fbf6f1; border-radius: 12px; font-size: 14px; line-height: 1.55; }
+
+.rp-weather { display: flex; align-items: center; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid #f1e8e0; }
+.rp-weather__icon { width: 50px; height: 50px; border-radius: 50%; background: #fff6d6; display: grid; place-items: center; font-size: 26px; flex: none; }
+.rp-weather__label { display: grid; font-size: 17px; font-weight: 700; }
+.rp-weather__label small, .rp-weather__main small { font-size: 12px; font-weight: 400; color: #9a8a80; }
+.rp-weather__main { margin-left: auto; display: grid; text-align: right; }
+.rp-weather__main b { font-size: 28px; color: #f4867a; line-height: 1.1; }
+.rp-feelings { display: flex; align-items: center; gap: 16px; padding: 12px 0 2px; }
+.rp-donut { width: 110px; height: 110px; flex: none; }
+.rp-feelings ul { list-style: none; margin: 0; padding: 0; flex: 1; display: grid; gap: 7px; }
+.rp-feelings li { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+.rp-feelings li i { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+.rp-feelings li b { margin-left: auto; }
+
+.rp-score { display: flex; align-items: baseline; gap: 4px; flex-wrap: wrap; }
+.rp-score small { width: 100%; font-size: 12px; color: #9a8a80; }
+.rp-score b { font-size: 32px; line-height: 1.1; }
+.rp-score span { color: #9a8a80; font-size: 14px; }
+.rp-curve { width: 100%; height: auto; max-height: 180px; margin: 8px 0 4px; display: block; }
+.rp-notes { margin: 4px 0 0; padding-left: 20px; font-size: 13px; line-height: 1.7; color: #6a5a50; }
+.rp-notes li::marker { color: #f4867a; font-weight: 700; }
+.rp-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.rp-tags span { padding: 5px 11px; border-radius: 999px; background: #fbf6f1; font-size: 13px; font-weight: 600; }
+
+.rp-signal { border-radius: 18px; padding: 14px 18px; margin-bottom: 12px; background: #fff3e0; color: #8a4b00; }
+.rp-signal--urgent { background: #fdecea; color: #a12c22; }
+.rp-signal h3 { margin: 0 0 6px; font-size: 15px; }
+.rp-signal p { margin: 3px 0; font-size: 14px; line-height: 1.55; }
+.rp-signal__help { font-size: 12.5px !important; padding-top: 4px; }
+.rp-foot { padding: 4px 6px 8px; font-size: 12px; line-height: 1.65; color: #9a8a80; }
 
 /* ---------- Narrow screens: stream on top, chat below ---------- */
 @media (max-width: 860px) {
