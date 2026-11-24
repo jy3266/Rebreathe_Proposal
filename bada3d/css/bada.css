@@ -102,6 +102,16 @@ html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); 
 .orb[data-state="nomic"] { background: #fde8e8; color: #b42318; }
 .voice__status { margin: 0; font-size: 14px; line-height: 1.45; color: var(--ink); }
 .chat__hint { margin: 0; padding: 0 16px 12px; font-size: 12px; color: var(--muted); }
+.mic-pick {
+  display: flex; align-items: center; gap: 8px;
+  padding: 0 16px 8px; font-size: 12px; color: var(--muted);
+}
+.mic-pick[hidden] { display: none; }
+.mic-pick select {
+  flex: 1; min-width: 0; max-width: 100%; font: inherit; font-size: 12px; color: var(--ink);
+  padding: 4px 6px; border: 1px solid rgba(0, 0, 0, 0.12); border-radius: 8px; background: #fff;
+  text-overflow: ellipsis;
+}
 
 @keyframes breathe { 50% { transform: scale(0.94); } }
 @keyframes ripple { from { transform: scale(1); opacity: 1; } to { transform: scale(1.6); opacity: 0; } }

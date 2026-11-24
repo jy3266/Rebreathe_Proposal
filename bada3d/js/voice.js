@@ -13,19 +13,36 @@ const END_SILENCE_MS = 1100; // this much quiet after speech = utterance finishe
 const MIN_SPEECH_MS = 300; // shorter blips (a cough, a click) are dropped
 const MAX_UTTERANCE_MS = 20000; // hard stop for one turn
 const MIN_THRESHOLD = 0.012; // RMS floor for "loud"; scaled up in noisy rooms
+// Virtual inputs with nothing feeding them (Oculus/Meta headset audio, NDI webcams, ...) deliver
+// digital silence, while a real microphone always picks up some room noise: on the studio laptop
+// every frame of the built-in mic was above 6e-4 RMS and every frame of the virtual ones was 0.
+// While the page itself plays sound (Bada's voice), Chrome's echo canceller adds faint comfort
+// noise (~1e-4) even to a dead input, so only frames heard while listening are judged: a device
+// counts as silent when fewer than 20% of its first 1.5 s of listening carry any signal.
+const ALIVE_RMS = 1e-5;
+const DEAD_CHECK_MS = 1500;
 
 /**
  * @param {{ onState?: (s: 'listening'|'hearing') => void,
  *           onLevel?: (level: number) => void,
  *           onUtterance: (wav: Blob) => void,
- *           stream?: MediaStream }} opts  `stream` replaces the microphone (tests).
+ *           onSilentInput?: () => void,
+ *           deviceId?: string,
+ *           stream?: MediaStream }} opts
+ *   `deviceId` picks a specific microphone (otherwise the browser's choice);
+ *   `onSilentInput` fires once if the device delivers nothing but digital silence;
+ *   `stream` replaces the microphone (tests).
  */
-export async function createMic({ onState, onLevel, onUtterance, stream }) {
+export async function createMic({ onState, onLevel, onUtterance, onSilentInput, deviceId, stream }) {
   const media =
     stream ||
     (await navigator.mediaDevices.getUserMedia({
-      audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true, channelCount: 1 },
+      audio: {
+        ...(deviceId ? { deviceId: { exact: deviceId } } : {}),
+        echoCancellation: true, noiseSuppression: true, autoGainControl: true, channelCount: 1,
+      },
     }));
+  const track = media.getAudioTracks()[0];
   const Ctx = window.AudioContext || window.webkitAudioContext;
   const ctx = new Ctx();
   if (ctx.state === 'suspended') await ctx.resume().catch(() => {});
@@ -58,12 +75,29 @@ export async function createMic({ onState, onLevel, onUtterance, stream }) {
     chunks = [];
   }
 
+  // Dead-input check over the first DEAD_CHECK_MS of listening (see ALIVE_RMS).
+  let checkFrames = 0;
+  let aliveFrames = 0;
+  let deadChecked = !onSilentInput;
+  let closed = false;
+
   proc.onaudioprocess = (e) => {
     if (!active) return;
     const frame = new Float32Array(e.inputBuffer.getChannelData(0)); // copy: the buffer is reused
     let sum = 0;
     for (let i = 0; i < frame.length; i++) sum += frame[i] * frame[i];
     const rms = Math.sqrt(sum / frame.length);
+
+    if (!deadChecked) {
+      checkFrames++;
+      if (rms > ALIVE_RMS) aliveFrames++;
+      if (checkFrames * frameMs >= DEAD_CHECK_MS) {
+        deadChecked = true;
+        if (aliveFrames < checkFrames * 0.2) {
+          setTimeout(() => { if (!closed) onSilentInput(); }, 0); // outside the audio callback
+        }
+      }
+    }
     const threshold = Math.max(MIN_THRESHOLD, noise * 3.2);
     const loud = rms > threshold;
     onLevel?.(Math.min(1, rms / (threshold * 3)));
@@ -122,7 +156,11 @@ export async function createMic({ onState, onLevel, onUtterance, stream }) {
     get active() {
       return active;
     },
+    /** Device label, e.g. "Microphone Array (Intel® Smart Sound Technology …)". */
+    label: track?.label || '',
+    deviceId: track?.getSettings?.().deviceId || deviceId || '',
     close() {
+      closed = true;
       active = false;
       proc.disconnect();
       source.disconnect();

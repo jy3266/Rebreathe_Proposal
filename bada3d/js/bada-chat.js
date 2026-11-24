@@ -33,6 +33,8 @@ const el = {
   safety: document.getElementById('safety-notice'),
   start: document.getElementById('start-btn'),
   startOverlay: document.getElementById('start-overlay'),
+  micPick: document.getElementById('mic-pick'),
+  micSelect: document.getElementById('mic-select'),
 };
 
 // Static page text: Korean in the HTML, English in data-en / data-en-* attributes.
@@ -349,30 +351,141 @@ async function converse(text) {
 }
 
 // ---------- Microphone ----------
+// Chrome remembers a ranking of microphones per profile and may pick a virtual input with nothing
+// behind it (Oculus/Meta headset audio, NDI webcam audio, ...): the page then hears pure digital
+// silence and "듣고 있어요" never changes. voice.js reports such a device, and it is swapped for the
+// next one here (likely-physical microphones first). The picker under the mic button shows which
+// microphone is in use and lets the visitor choose another.
+
+const LIKELY_VIRTUAL = /virtual|oculus|meta quest|ndi|stereo mix|cable|vb-audio|voicemeeter|steam streaming|obs/i;
+const silentMics = new Set(); // labels (or ids) of devices that delivered nothing
+let switchingMic = false;
+
+const micKey = (d) => d.label || d.deviceId;
+
+// Real devices only: 'default' / 'communications' are aliases listed again under their own id.
+async function inputDevices() {
+  const all = await navigator.mediaDevices.enumerateDevices();
+  return all.filter((d) => d.kind === 'audioinput' && d.deviceId &&
+    d.deviceId !== 'default' && d.deviceId !== 'communications');
+}
+
+async function openMic(deviceId, { chosen = false } = {}) {
+  const m = await createMic({
+    deviceId,
+    onState: (s) => {
+      if (m && m !== mic) return; // a microphone that is being replaced
+      setState(s);
+      if (s === 'hearing') {
+        touch();
+        stopSpeaking();
+        bridge?.send({ bada: 'listen_start' });
+      }
+    },
+    onLevel: setLevel,
+    onUtterance,
+    onSilentInput: () => onSilentMic(m, chosen),
+  });
+  return m;
+}
+
+// Swap in another microphone, keeping whatever the conversation was doing.
+async function replaceMic(deviceId, opts) {
+  const old = mic;
+  const wasListening = !!old?.active;
+  const next = await openMic(deviceId, opts); // throws if the device cannot be opened
+  old?.pause();
+  mic = next;
+  old?.close();
+  if (wasListening) mic.listen();
+  renderMicPicker();
+}
+
+async function onSilentMic(dead, chosen) {
+  if (dead !== mic) return;
+  silentMics.add(micKey(dead));
+  renderMicPicker();
+  if (chosen || switchingMic) {
+    if (chosen) addBubble('system', T(
+      '이 마이크에서는 소리가 들어오지 않아요. 아래 "마이크"에서 다른 것을 골라 주세요.',
+      'No sound is coming from this microphone. Please pick another one under "Mic" below.'));
+    return;
+  }
+  switchingMic = true;
+  try {
+    const candidates = (await inputDevices())
+      .filter((d) => d.deviceId !== dead.deviceId && !silentMics.has(micKey(d)) &&
+        !(d.label && dead.label.endsWith(d.label))) // "Default - X" is X itself
+      .sort((a, b) => LIKELY_VIRTUAL.test(a.label) - LIKELY_VIRTUAL.test(b.label));
+    for (const d of candidates) {
+      try {
+        await replaceMic(d.deviceId);
+        console.info('[mic] silent input', dead.label, '-> switched to', d.label);
+        addBubble('system', T(
+          `🎤 소리가 들어오지 않는 마이크라서 "${d.label || '다른 마이크'}"(으)로 바꿨어요.`,
+          `🎤 That microphone was silent, so I switched to "${d.label || 'another microphone'}".`));
+        return; // if this one is silent too, its own check moves on to the next
+      } catch (err) {
+        console.warn('[mic] could not open', d.label, err);
+        silentMics.add(micKey(d));
+      }
+    }
+    addBubble('system', T(
+      '마이크에서 소리가 들어오지 않아요. 마이크가 연결돼 있는지 확인하고, 아래 "마이크"에서 골라 주세요.',
+      'No sound is coming from the microphone. Check that one is connected and pick it under "Mic" below.'));
+  } finally {
+    switchingMic = false;
+  }
+}
+
+async function renderMicPicker() {
+  if (!el.micPick || !el.micSelect) return; // an older cached index.html without the picker
+  if (!mic) { el.micPick.hidden = true; return; }
+  let devices = [];
+  try { devices = await inputDevices(); } catch { /* ignore */ }
+  if (!devices.length) { el.micPick.hidden = true; return; }
+  el.micSelect.replaceChildren(...devices.map((d) => {
+    const silent = silentMics.has(micKey(d)) ? T(' (소리 없음)', ' (silent)') : '';
+    const o = new Option((d.label || T('마이크', 'Microphone')) + silent, d.deviceId);
+    o.selected = d.deviceId === mic.deviceId || (!!d.label && mic.label.endsWith(d.label));
+    return o;
+  }));
+  el.micPick.hidden = false;
+}
 
 async function startMic() {
   setState('starting');
   try {
-    mic = await createMic({
-      onState: (s) => {
-        setState(s);
-        if (s === 'hearing') {
-          touch();
-          stopSpeaking();
-          bridge?.send({ bada: 'listen_start' });
-        }
-      },
-      onLevel: setLevel,
-      onUtterance,
-    });
-    return true;
+    mic = await openMic();
   } catch (err) {
     console.error('Microphone unavailable', err);
     mic = null;
-    setState('nomic');
-    return false;
+    // Permission refused: nothing else will work. Otherwise (device busy or gone) try the others.
+    if (err?.name !== 'NotAllowedError' && err?.name !== 'SecurityError') {
+      for (const d of await inputDevices().catch(() => [])) {
+        try { mic = await openMic(d.deviceId); break; } catch { silentMics.add(micKey(d)); }
+      }
+    }
+    if (!mic) {
+      setState('nomic');
+      return false;
+    }
   }
+  renderMicPicker();
+  return true;
 }
+
+el.micSelect?.addEventListener('change', async () => {
+  const id = el.micSelect.value;
+  try {
+    await replaceMic(id, { chosen: true });
+  } catch (err) {
+    console.error('Could not open the chosen microphone', err);
+    addBubble('system', T('그 마이크를 열 수 없어요. 다른 것을 골라 주세요.', 'Could not open that microphone. Please pick another one.'));
+    renderMicPicker();
+  }
+});
+navigator.mediaDevices?.addEventListener?.('devicechange', () => renderMicPicker());
 
 // ---------- Wiring ----------
 

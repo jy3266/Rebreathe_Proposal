@@ -22,8 +22,8 @@ assets/
 bada3d/                 3D 체험 페이지 (언리얼 화면 + 목소리로만 하는 바다와의 대화)
   js/config.js          스트림 종류·주소 설정 (공개 페이지라 허용된 주소만 받음)
   js/ue-bridge.js       언리얼 연결 — 시연 PC(Epic 프런트엔드) / Eagle 3D Streaming(iframe)
-  js/voice.js           마이크 · 말 끝 자동 감지 → WAV
-  js/bada-chat.js       음성 대화 흐름 (글자 변환 → Claude → 음성 출력), 클라우드 자동 종료
+  js/voice.js           마이크 · 말 끝 자동 감지 → WAV, 소리가 안 들어오는(가상) 마이크 감지
+  js/bada-chat.js       음성 대화 흐름 (글자 변환 → Claude → 음성 출력), 마이크 자동 교체·선택, 클라우드 자동 종료
 tools/
   build-artifact.ps1    단일 HTML로 묶는 빌드 스크립트 (Artifact 게시용)
 ```

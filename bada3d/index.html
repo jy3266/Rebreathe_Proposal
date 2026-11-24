@@ -37,6 +37,11 @@
         </button>
         <p id="voice-status" class="voice__status" aria-live="polite"></p>
       </div>
+      <!-- Which microphone is in use; silent virtual inputs are skipped automatically (bada-chat.js). -->
+      <label id="mic-pick" class="mic-pick" hidden>
+        <span data-en="Mic">마이크</span>
+        <select id="mic-select" aria-label="마이크 고르기" data-en-aria-label="Choose a microphone"></select>
+      </label>
       <p class="chat__hint" data-en="Just talk — Bada answers when you pause · Walk together with the arrow keys">말을 마치면 바다가 대답해요 · 방향키로 같이 걸어요</p>
     </aside>
 
