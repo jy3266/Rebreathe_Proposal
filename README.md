@@ -63,7 +63,7 @@ https://jy3266.github.io/Rebreathe_Proposal/?lang=en
    대화 서버(Cloudflare Worker)의 KV에 저장합니다. `stage3d.js`가 Worker의 `GET /stream`으로
    주소를 받아 `bada3d/?ss=wss://…`로 엽니다.
 2. **Eagle 3D Streaming 클라우드 (PC가 꺼져 있으면, 쓴 시간만큼 과금)**
-   `stage3d.js` 맨 위 `CLOUD_STREAM`에 Eagle 링크가 있을 때만 씁니다. 체험 페이지에서
+   `stage3d.js` 맨 위 `CLOUD_STREAM`의 Eagle 링크(현재 `…/v5/Junoh/Rebreathe_PixelStreaming_Win64/default`)를 씁니다. 체험 페이지에서
    **산책 시작하기**를 눌러야 클라우드 연결이 시작되고(구경만 해서는 과금되지 않음),
    5분 동안 대화가 없거나 Eagle이 세션을 끝내면 연결을 닫습니다.
 3. 둘 다 안 되면 안내 문구와 함께 **2D로 바닷가 걷기** 버튼을 보여 주고, 누르면 기존 2D 데모가 나옵니다.
@@ -72,7 +72,7 @@ https://jy3266.github.io/Rebreathe_Proposal/?lang=en
 클라우드 링크를 넣거나 바꿀 때만 `CLOUD_STREAM`을 고쳐 푸시합니다.
 Worker 주소는 `stage3d.js` 맨 위 `WORKER` 값입니다.
 
-### Eagle 3D Streaming 링크 넣기
+### Eagle 3D Streaming 링크 넣기 (앱을 새로 올렸거나 링크가 바뀌었을 때)
 
 1. Eagle Control Panel에 `Rebreathe_PixelStreaming_Win64.zip`(시연 PC의 `D:\Rebreathe_Web`)을 업로드
 2. 앱의 Configuration에서 권장 설정: **Autoplay 켬**, **Log Out Automatically After Inactivity 켬**,

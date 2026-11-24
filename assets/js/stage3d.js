@@ -18,7 +18,7 @@
   var DEMO_PAGE = 'bada3d/';
   /* Eagle 3D Streaming 링크 (Control Panel → 앱 → Configuration → iframe 의 src).
      비워 두면 클라우드를 쓰지 않는다. */
-  var CLOUD_STREAM = '';
+  var CLOUD_STREAM = 'https://connector.eagle3dstreaming.com/v5/Junoh/Rebreathe_PixelStreaming_Win64/default';
 
   function byId(id) { return document.getElementById(id); }
   var root = byId('stage3d');
@@ -46,10 +46,10 @@
       ['리브리드 스튜디오의 시연 PC를 찾고 있어요.', 'Looking for the demo PC in the REBREATHE studio.']
     ],
     offline: [
-      ['지금은 3D 시연 PC가 쉬고 있어요', 'The 3D demo PC is resting right now'],
-      ['3D 체험은 리브리드 팀의 PC에서 실시간으로 스트리밍되어, 그 PC가 켜져 있을 때만 열려요. ' +
+      ['지금은 3D 체험을 열 수 없어요', 'The 3D experience is not available right now'],
+      ['3D 화면을 보내 줄 곳(리브리드 팀 PC나 클라우드)에 연결하지 못했어요. ' +
        '그동안 2D 버전으로 바닷가를 걸어 보세요.',
-       'The 3D experience streams live from a REBREATHE team PC, so it opens only while that PC is on. ' +
+       'We could not reach a place to stream the 3D scene from (the REBREATHE team PC or the cloud). ' +
        'Meanwhile, take a walk along the shore in the 2D version.']
     ]
   };

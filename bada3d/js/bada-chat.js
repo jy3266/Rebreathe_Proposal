@@ -73,9 +73,11 @@ const STATUS_TEXT = {
   failed: T('3D 화면에 연결하지 못했어요', 'Could not connect to the 3D scene'),
   // Eagle 3D Streaming (cloud)
   'cloud-starting': T('클라우드에서 3D 공원을 여는 중… (1~2분 걸릴 수 있어요)', 'Opening the 3D park in the cloud… (may take 1–2 minutes)'),
-  queued: (n) => (n
-    ? T(`다른 분이 산책 중이에요. 대기 ${n}번째`, `Someone else is walking right now. You are #${n} in line`)
-    : T('다른 분이 산책 중이에요. 잠시만 기다려 주세요', 'Someone else is walking right now. Please wait')),
+  // Eagle reports position 1 even when nobody else is walking (it is assigning a cloud GPU),
+  // so only a later position means other people are ahead.
+  queued: (n) => (n > 1
+    ? T(`다른 분이 먼저 산책 중이에요. 대기 ${n}번째`, `Others are walking right now. You are #${n} in line`)
+    : T('클라우드에서 3D 공원을 준비하는 중… (1~2분 걸릴 수 있어요)', 'Getting the 3D park ready in the cloud… (may take 1–2 minutes)')),
 };
 function setStatus(s, extra) {
   if (s === 'ended') {

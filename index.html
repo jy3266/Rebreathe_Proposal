@@ -410,7 +410,7 @@
       </p>
     </header>
 
-    <!-- 3D 체험: 리브리드 팀 PC의 언리얼 빌드를 Pixel Streaming 으로 띄운다 (assets/js/stage3d.js) -->
+    <!-- 3D 체험: 리브리드 팀 PC 또는 Eagle 3D Streaming 클라우드의 언리얼 빌드를 띄운다 (assets/js/stage3d.js, bada3d/) -->
     <div class="stage3d reveal" id="stage3d" data-state="idle">
       <iframe class="stage3d__frame" id="stage3dFrame" hidden
               title="바다와 함께 걷기 3D 체험" data-en-title="Walk with Bada — 3D experience"
@@ -432,13 +432,14 @@
       <button class="stage3d__tool" id="stage3dFull" type="button" data-en="⛶ Full screen">⛶ 전체 화면</button>
       <a class="stage3d__tool" id="stage3dOpen" href="#play" target="_blank" rel="noopener" data-en="↗ Open in a new tab">↗ 새 창에서 열기</a>
     </div>
-    <p class="game__disclaimer stage3d__note reveal" id="stage3dNote" data-en="⚠️ The 3D experience is a &lt;b&gt;demo build in development&lt;/b&gt;, streamed live from a REBREATHE team PC, so it opens only while that PC is on. Everyone connected at the same time shares the same scene. Your voice is sent to Cloudflare Workers AI to be turned into text, and the conversation to an AI (Anthropic Claude) to write Bada&rsquo;s replies; no recording or conversation is stored. It is no substitute for medical diagnosis or treatment. You need a microphone and speakers.">
-      ⚠️ 3D 체험은 <b>개발 중인 시연 빌드</b>로, 리브리드 팀의 PC에서 실시간으로 스트리밍되어 PC가 켜져 있을 때만 열립니다.
-      같은 시간에 접속한 분들은 같은 장면을 함께 보게 돼요. 목소리는 글자로 바꾸기 위해 Cloudflare Workers AI로, 대화 내용은 바다의 대답을 만들기 위해
+    <p class="game__disclaimer stage3d__note reveal" id="stage3dNote" data-en="⚠️ The 3D experience is a &lt;b&gt;demo build in development&lt;/b&gt;, streamed live from a REBREATHE team PC or, when that PC is off, from a cloud GPU. On the team PC everyone connected at the same time shares the same scene; in the cloud you may wait a moment when many people are walking. Your voice is sent to Cloudflare Workers AI to be turned into text, and the conversation to an AI (Anthropic Claude) to write Bada&rsquo;s replies; no recording or conversation is stored. It is no substitute for medical diagnosis or treatment. You need a microphone and speakers.">
+      ⚠️ 3D 체험은 <b>개발 중인 시연 빌드</b>로, 리브리드 팀의 PC에서, 그 PC가 꺼져 있으면 클라우드 GPU에서 실시간으로 스트리밍됩니다.
+      팀 PC로 열리면 같은 시간에 접속한 분들과 같은 장면을 함께 보고, 클라우드로 열리면 이용자가 많을 때 잠시 기다릴 수 있어요.
+      목소리는 글자로 바꾸기 위해 Cloudflare Workers AI로, 대화 내용은 바다의 대답을 만들기 위해
       AI(Anthropic Claude)로 전송되며 녹음이나 대화는 저장하지 않습니다. 의학적 진단·치료를 대신하지 않습니다. 마이크와 스피커가 필요해요.
     </p>
 
-    <!-- 2D 체험: 3D 시연 PC가 꺼져 있을 때 '2D로 바닷가 걷기'를 누르면 보인다 -->
+    <!-- 2D 체험: 3D를 열 수 없을 때 '2D로 바닷가 걷기'를 누르면 보인다 -->
     <div class="game reveal" id="game" tabindex="-1" hidden>
       <canvas id="gameCanvas" aria-label="바닷가를 걷는 2D 산책 장면" data-en-aria-label="A 2D scene of a walk along the shore"></canvas>
 
