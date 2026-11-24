@@ -16,9 +16,14 @@ assets/
   css/style.css         전체 스타일
   js/i18n.js            한국어 / English 전환 엔진
   js/main.js            스크롤 애니메이션 · 네비게이션 · 카운터
-  js/stage3d.js         '바다와 함께 걷기' 3D 체험 (리브리드 PC의 언리얼 빌드를 iframe으로)
-  js/game.js            '바다와 함께 걷기' 2D 상담 데모 (3D 시연 PC가 꺼져 있을 때 대신 보임)
+  js/stage3d.js         '바다와 함께 걷기' 3D 체험을 어디서 띄울지 고른다 (시연 PC / 클라우드 / 2D)
+  js/game.js            '바다와 함께 걷기' 2D 상담 데모 (3D를 열 수 없을 때 대신 보임)
   img/                  사진 · 스크린샷
+bada3d/                 3D 체험 페이지 (언리얼 화면 + 목소리로만 하는 바다와의 대화)
+  js/config.js          스트림 종류·주소 설정 (공개 페이지라 허용된 주소만 받음)
+  js/ue-bridge.js       언리얼 연결 — 시연 PC(Epic 프런트엔드) / Eagle 3D Streaming(iframe)
+  js/voice.js           마이크 · 말 끝 자동 감지 → WAV
+  js/bada-chat.js       음성 대화 흐름 (글자 변환 → Claude → 음성 출력), 클라우드 자동 종료
 tools/
   build-artifact.ps1    단일 HTML로 묶는 빌드 스크립트 (Artifact 게시용)
 ```
@@ -50,17 +55,33 @@ https://jy3266.github.io/Rebreathe_Proposal/?lang=en
 
 ## '바다와 함께 걷기' 3D 체험은 어떻게 연결되나
 
-체험 구간(`#play`)은 리브리드 팀 PC에서 돌아가는 언리얼 빌드를 Pixel Streaming으로 보여 줍니다.
+체험 구간(`#play`)은 `bada3d/` 체험 페이지를 iframe으로 띄웁니다. 언리얼 3D 화면은 아래 순서로 고릅니다.
 
-1. 시연 PC에서 `start-demo.bat`을 실행하면 시그널링 서버 · 언리얼 빌드 · Cloudflare 터널이 켜지고,
+1. **리브리드 시연 PC (켜져 있으면, 무료)**
+   시연 PC에서 `start-demo.bat`을 실행하면 시그널링 서버 · 언리얼 빌드 · Cloudflare 터널이 켜지고,
    `register-stream.ps1`이 이번 터널 주소(`https://….trycloudflare.com`, 켤 때마다 바뀜)를
-   대화 서버(Cloudflare Worker)의 KV에 저장합니다.
-2. 사이트의 `assets/js/stage3d.js`가 체험 구간 근처에 오면 Worker의 `GET /stream`에 묻고,
-   PC가 켜져 있으면 그 주소의 시연 페이지(3D 화면 + 바다와의 대화창)를 iframe으로 띄웁니다.
-3. PC가 꺼져 있으면 안내 문구와 함께 **2D로 바닷가 걷기** 버튼을 보여 주고, 누르면 기존 2D 데모가 나옵니다.
+   대화 서버(Cloudflare Worker)의 KV에 저장합니다. `stage3d.js`가 Worker의 `GET /stream`으로
+   주소를 받아 `bada3d/?ss=wss://…`로 엽니다.
+2. **Eagle 3D Streaming 클라우드 (PC가 꺼져 있으면, 쓴 시간만큼 과금)**
+   `stage3d.js` 맨 위 `CLOUD_STREAM`에 Eagle 링크가 있을 때만 씁니다. 체험 페이지에서
+   **산책 시작하기**를 눌러야 클라우드 연결이 시작되고(구경만 해서는 과금되지 않음),
+   5분 동안 대화가 없거나 Eagle이 세션을 끝내면 연결을 닫습니다.
+3. 둘 다 안 되면 안내 문구와 함께 **2D로 바닷가 걷기** 버튼을 보여 주고, 누르면 기존 2D 데모가 나옵니다.
 
-즉 사이트는 다시 배포할 필요 없이, 시연 PC를 켜 두기만 하면 3D 체험이 열립니다.
+시연 PC 쪽은 사이트를 다시 배포할 필요 없이 켜 두기만 하면 됩니다.
+클라우드 링크를 넣거나 바꿀 때만 `CLOUD_STREAM`을 고쳐 푸시합니다.
 Worker 주소는 `stage3d.js` 맨 위 `WORKER` 값입니다.
+
+### Eagle 3D Streaming 링크 넣기
+
+1. Eagle Control Panel에 `Rebreathe_PixelStreaming_Win64.zip`(시연 PC의 `D:\Rebreathe_Web`)을 업로드
+2. 앱의 Configuration에서 권장 설정: **Autoplay 켬**, **Log Out Automatically After Inactivity 켬**,
+   최대 세션 길이 제한(예: 15분), 시작 비밀번호 없음
+3. Configuration의 iframe 코드에서 `src` 주소(`https://connector.eagle3dstreaming.com/v5/…`)를 복사해
+   `assets/js/stage3d.js`의 `var CLOUD_STREAM = '';` 따옴표 안에 넣고 푸시
+
+체험 페이지는 `eagle3dstreaming.com` 주소만 받아들이고, 시그널링 서버도 `*.trycloudflare.com`만 받습니다
+(공개 페이지에 다른 사이트를 끼워 넣는 링크를 막기 위해서). 로컬(`localhost`)에서는 제한이 없습니다.
 
 ## 언어 전환은 어떻게 동작하나
 

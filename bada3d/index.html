@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>바다와 함께 걷기</title>
+  <link rel="stylesheet" href="css/bada.css">
+</head>
+<body>
+  <!-- Korean text lives in the markup; English in data-en / data-en-* (shown with ?lang=en). -->
+  <main class="app">
+    <!-- Unreal Pixel Streaming video goes here -->
+    <section id="stage" class="stage" aria-label="3D 해변 산책 화면" data-en-aria-label="3D walk scene">
+      <p id="stream-status" class="stage__status" hidden></p>
+    </section>
+
+    <aside class="chat" aria-label="바다와 대화" data-en-aria-label="Chat with Bada">
+      <header class="chat__head">
+        <h1 data-en="Walk with Bada">바다와 함께 걷기</h1>
+        <button id="voice-btn" class="chip" type="button" aria-pressed="true" data-en="🔊 Voice on">🔊 목소리 켬</button>
+      </header>
+
+      <p id="safety-notice" class="safety" hidden
+         data-en="That sounds really hard. Please tell a parent, caregiver or teacher near you. In an emergency call &lt;b&gt;112&lt;/b&gt;; if your heart feels too heavy, you can call &lt;b&gt;109&lt;/b&gt; (Korea&rsquo;s suicide prevention line).">
+        마음이 많이 힘든 이야기를 해 주었어요. 곁에 있는 보호자나 선생님께 꼭 알려 주세요.
+        위급하면 <b>112</b>, 마음이 너무 힘들면 <b>109</b>(자살예방상담전화)에 전화할 수 있어요.
+      </p>
+
+      <div id="chat-log" class="chat__log" aria-live="polite"></div>
+
+      <!-- Voice only: no typing. The button shows what is happening and pauses / resumes listening. -->
+      <div class="voice">
+        <button id="mic-btn" class="orb" type="button" data-state="off"
+                aria-label="듣기 멈추기 / 다시 듣기" data-en-aria-label="Pause or resume listening">
+          <span class="orb__ring" aria-hidden="true"></span>
+          <span class="orb__icon" aria-hidden="true">🎤</span>
+        </button>
+        <p id="voice-status" class="voice__status" aria-live="polite"></p>
+      </div>
+      <p class="chat__hint" data-en="Just talk — Bada answers when you pause · Walk together with the arrow keys">말을 마치면 바다가 대답해요 · 방향키로 같이 걸어요</p>
+    </aside>
+
+    <div id="start-overlay" class="start">
+      <div class="start__card">
+        <h2 data-en="Walk with Bada">바다와 함께 걷기</h2>
+        <p data-en="Take a walk with Bada and talk about what happened today &lt;b&gt;out loud&lt;/b&gt; — no typing.&lt;br&gt;Please turn on your microphone and speakers.">바다와 해변을 걸으며 오늘 있었던 일을 <b>말로</b> 이야기해 보세요.<br>
+           마이크와 스피커를 켜 주세요.</p>
+        <button id="start-btn" class="start__btn" type="button" data-en="🎤 Start the walk">🎤 산책 시작하기</button>
+        <p class="start__fine" data-en="Your voice is turned into text by Cloudflare Workers AI, and Bada&rsquo;s replies are written by AI (Claude). Nothing is recorded or saved by this page.">목소리는 글자로 바꾸는 데에만(Cloudflare Workers AI), 대화 내용은 AI(Claude)가 답을 만드는 데에만 쓰여요. 이 페이지는 녹음이나 대화를 저장하지 않아요.</p>
+      </div>
+    </div>
+  </main>
+  <script type="module" src="js/bada-chat.js"></script>
+</body>
+</html>

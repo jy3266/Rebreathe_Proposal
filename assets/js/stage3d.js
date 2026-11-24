@@ -1,17 +1,24 @@
 /* ==========================================================
    '바다와 함께 걷기' 3D 체험
    ----------------------------------------------------------
-   리브리드 팀 PC에서 돌아가는 언리얼 빌드를 Pixel Streaming 으로 보여준다.
-   그 PC의 공개 주소(Cloudflare quick tunnel)는 켤 때마다 바뀌므로, 대화 서버(Worker)의
-   GET /stream 에 지금 주소와 접속 가능 여부를 묻는다. 주소는 PC 쪽 start-demo.bat →
-   register-stream.ps1 이 등록한다.
-   PC가 꺼져 있으면 기존 2D 체험(#game, game.js)으로 걸을 수 있게 한다.
+   체험 페이지(bada3d/ — 3D 화면 + 목소리로만 하는 대화)를 iframe으로 띄운다.
+   3D 화면은 두 곳 중 한 곳에서 온다.
+     1) 리브리드 스튜디오 PC (켜져 있을 때, 무료)
+        공개 주소(Cloudflare quick tunnel)는 켤 때마다 바뀌므로 대화 서버(Worker)의
+        GET /stream 에 묻는다. PC 쪽 start-demo.bat → register-stream.ps1 이 등록한다.
+     2) Eagle 3D Streaming 클라우드 (PC가 꺼져 있을 때, 쓴 시간만큼 과금)
+        CLOUD_STREAM 에 링크가 있을 때만. 체험 페이지에서 '산책 시작하기'를 눌러야 연결된다.
+   둘 다 안 되면 기존 2D 체험(#game, game.js)으로 걸을 수 있게 한다.
    ========================================================== */
 (function () {
   'use strict';
 
   var WORKER = 'https://rebreathe-bada-chat.rebreathe-bada-chat.workers.dev';
   var TUNNEL = /^https:\/\/[a-z0-9-]+\.trycloudflare\.com$/;
+  var DEMO_PAGE = 'bada3d/';
+  /* Eagle 3D Streaming 링크 (Control Panel → 앱 → Configuration → iframe 의 src).
+     비워 두면 클라우드를 쓰지 않는다. */
+  var CLOUD_STREAM = '';
 
   function byId(id) { return document.getElementById(id); }
   var root = byId('stage3d');
@@ -25,6 +32,7 @@
     to2d: byId('stage3dTo2d'),
     retry: byId('stage3dRetry'),
     bar: byId('stage3dBar'),
+    live: byId('stage3dLive'),
     full: byId('stage3dFull'),
     open: byId('stage3dOpen'),
     note: byId('stage3dNote'),
@@ -45,14 +53,23 @@
        'Meanwhile, take a walk along the shore in the 2D version.']
     ]
   };
+  var LIVE = {
+    studio: ['리브리드 스튜디오에서 실시간 스트리밍 중 · 화면 안에서 시작을 누르고 마이크를 허용해 주세요',
+             'Streaming live from the REBREATHE studio · press start inside and allow the microphone'],
+    cloud: ['클라우드 GPU에서 스트리밍 · 화면 안에서 시작을 누르면 연결되고, 마이크를 허용해 주세요',
+            'Streamed from a cloud GPU · press start inside to connect, then allow the microphone']
+  };
 
   var state = 'idle';
+  var source = '';
 
   function paint() {
     var t = TEXT[state];
-    if (!t) return;
-    el.title.textContent = RB.t(t[0][0], t[0][1]);
-    el.msg.textContent = RB.t(t[1][0], t[1][1]);
+    if (t) {
+      el.title.textContent = RB.t(t[0][0], t[0][1]);
+      el.msg.textContent = RB.t(t[1][0], t[1][1]);
+    }
+    if (source) el.live.textContent = RB.t(LIVE[source][0], LIVE[source][1]);
   }
 
   function setState(s) {
@@ -74,16 +91,28 @@
     fetch(WORKER + '/stream', { cache: 'no-store', signal: ctrl ? ctrl.signal : undefined })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (s) {
-        if (s && s.online && TUNNEL.test(s.url)) open(s.url);
-        else setState('offline');
+        if (s && s.online && TUNNEL.test(s.url)) {
+          open('studio', { ss: 'wss://' + s.url.replace(/^https:\/\//, '') });
+        } else {
+          openCloudOrOffline();
+        }
       })
-      .catch(function () { setState('offline'); })
+      .catch(openCloudOrOffline)
       .then(function () { clearTimeout(timer); });
   }
 
-  /* 데모 페이지(web-demo)를 통째로 띄운다 — 화면 스트림과 바다와의 대화창이 함께 들어 있다 */
-  function open(url) {
-    var src = url + '/' + (RB.lang === 'en' ? '?lang=en' : '');
+  function openCloudOrOffline() {
+    if (CLOUD_STREAM) open('cloud', { stream: 'e3ds', e3ds: CLOUD_STREAM });
+    else setState('offline');
+  }
+
+  /* 체험 페이지를 통째로 띄운다 — 3D 화면과 바다와의 목소리 대화가 함께 들어 있다 */
+  function open(kind, params) {
+    var q = Object.keys(params).map(function (k) { return k + '=' + encodeURIComponent(params[k]); });
+    if (RB.lang === 'en') q.push('lang=en');
+    var src = DEMO_PAGE + '?' + q.join('&');
+    source = kind;
+    root.setAttribute('data-source', kind);
     el.frame.src = src;
     el.open.href = src;
     setState('online');
@@ -114,7 +143,7 @@
 
   RB.onLang(paint);
 
-  /* 스트림 연결은 무거우니 체험 구간 근처까지 내려왔을 때 처음 확인한다 */
+  /* 체험 구간 근처까지 내려왔을 때 처음 확인한다 */
   if (!window.fetch) { setState('offline'); return; }
   if ('IntersectionObserver' in window) {
     var io = new IntersectionObserver(function (entries) {
