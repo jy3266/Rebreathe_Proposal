@@ -134,6 +134,10 @@ function createE3dsBridge(config, container, onStatus) {
       iframe.remove(); // closing the player ends the session (and its billing)
       iframe.removeAttribute('src');
     },
+    // The cloud player only receives walking keys while its iframe has focus.
+    focus() {
+      if (iframe.isConnected) iframe.focus();
+    },
   };
 }
 
@@ -144,6 +148,7 @@ function createNullBridge(onStatus) {
     onResponse() {},
     play() {},
     stop() {},
+    focus() {},
   };
 }
 
@@ -185,5 +190,6 @@ async function createEpicBridge(config, container, onStatus) {
     onResponse(fn) { listeners.push(fn); },
     play() { try { ps.play(); } catch { /* ignore */ } },
     stop() {}, // the studio PC costs nothing to keep connected
+    focus() {}, // Pixel Streaming reads keys on `document`, wherever focus is
   };
 }

@@ -370,7 +370,8 @@ async function inputDevices() {
     d.deviceId !== 'default' && d.deviceId !== 'communications');
 }
 
-async function openMic(deviceId, { chosen = false } = {}) {
+// opts.previousId: the microphone in use before the visitor picked this one (to go back to it).
+async function openMic(deviceId, opts = {}) {
   const m = await createMic({
     deviceId,
     onState: (s) => {
@@ -384,7 +385,7 @@ async function openMic(deviceId, { chosen = false } = {}) {
     },
     onLevel: setLevel,
     onUtterance,
-    onSilentInput: () => onSilentMic(m, chosen),
+    onSilentInput: () => onSilentMic(m, opts),
   });
   return m;
 }
@@ -401,29 +402,28 @@ async function replaceMic(deviceId, opts) {
   renderMicPicker();
 }
 
-async function onSilentMic(dead, chosen) {
-  if (dead !== mic) return;
+// A silent microphone is never worth keeping, however it was chosen (by the browser, or by a
+// picker change, even an accidental one): go back to the one used before, else try the others.
+async function onSilentMic(dead, { previousId } = {}) {
+  if (dead !== mic || switchingMic) return;
   silentMics.add(micKey(dead));
   renderMicPicker();
-  if (chosen || switchingMic) {
-    if (chosen) addBubble('system', T(
-      '이 마이크에서는 소리가 들어오지 않아요. 아래 "마이크"에서 다른 것을 골라 주세요.',
-      'No sound is coming from this microphone. Please pick another one under "Mic" below.'));
-    return;
-  }
   switchingMic = true;
   try {
     const candidates = (await inputDevices())
       .filter((d) => d.deviceId !== dead.deviceId && !silentMics.has(micKey(d)) &&
         !(d.label && dead.label.endsWith(d.label))) // "Default - X" is X itself
-      .sort((a, b) => LIKELY_VIRTUAL.test(a.label) - LIKELY_VIRTUAL.test(b.label));
+      .sort((a, b) => (b.deviceId === previousId) - (a.deviceId === previousId) ||
+        LIKELY_VIRTUAL.test(a.label) - LIKELY_VIRTUAL.test(b.label));
     for (const d of candidates) {
       try {
         await replaceMic(d.deviceId);
         console.info('[mic] silent input', dead.label, '-> switched to', d.label);
-        addBubble('system', T(
-          `🎤 소리가 들어오지 않는 마이크라서 "${d.label || '다른 마이크'}"(으)로 바꿨어요.`,
-          `🎤 That microphone was silent, so I switched to "${d.label || 'another microphone'}".`));
+        addBubble('system', d.deviceId === previousId
+          ? T('🎤 고른 마이크에서는 소리가 들어오지 않아서 원래 마이크로 돌아왔어요.',
+            '🎤 No sound came from that microphone, so I went back to the previous one.')
+          : T(`🎤 소리가 들어오지 않는 마이크라서 "${d.label || '다른 마이크'}"(으)로 바꿨어요.`,
+            `🎤 That microphone was silent, so I switched to "${d.label || 'another microphone'}".`));
         return; // if this one is silent too, its own check moves on to the next
       } catch (err) {
         console.warn('[mic] could not open', d.label, err);
@@ -475,10 +475,19 @@ async function startMic() {
   return true;
 }
 
+// The device in use, resolved to its own id (a microphone the browser picked reports 'default').
+async function currentDeviceId() {
+  if (!mic) return undefined;
+  if (mic.deviceId && mic.deviceId !== 'default' && mic.deviceId !== 'communications') return mic.deviceId;
+  const devices = await inputDevices().catch(() => []);
+  return devices.find((d) => d.label && mic.label.endsWith(d.label))?.deviceId;
+}
+
 el.micSelect?.addEventListener('change', async () => {
   const id = el.micSelect.value;
+  returnFocusToScene(el.micSelect); // keys go back to walking, not to the picker
   try {
-    await replaceMic(id, { chosen: true });
+    await replaceMic(id, { previousId: await currentDeviceId() });
   } catch (err) {
     console.error('Could not open the chosen microphone', err);
     addBubble('system', T('그 마이크를 열 수 없어요. 다른 것을 골라 주세요.', 'Could not open that microphone. Please pick another one.'));
@@ -515,12 +524,30 @@ el.voice.addEventListener('click', () => {
   el.voice.setAttribute('aria-pressed', String(voiceOn));
 });
 
-// When this page is embedded (the proposal site shows it in an iframe), walking keys must not
-// also scroll the outer page. Pixel Streaming has already read the key on `document` before
-// this window listener runs.
-const NAV_KEYS = new Set(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' ', 'PageUp', 'PageDown', 'Home', 'End']);
+// Keys belong to the walk. A click leaves focus on the chat control that was clicked, and the
+// browser would then let walking keys operate it: arrows or a letter pick another microphone in
+// the picker (W jumps to "Webcam …", a silent virtual input), Space presses the focused button
+// (pausing the microphone). So while a chat control has focus, a walking key or a letter is
+// swallowed and focus goes back to the 3D scene; the character still moves, because Pixel
+// Streaming has already read the key on `document` before this window listener runs.
+// Walking keys must not scroll the outer page either (the proposal site embeds this page).
+const WALK_KEYS = new Set(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' ', 'w', 'a', 's', 'd', 'W', 'A', 'S', 'D']);
+const SCROLL_KEYS = new Set(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' ', 'PageUp', 'PageDown', 'Home', 'End']);
+
+function returnFocusToScene(control) {
+  control?.blur();
+  bridge?.focus?.(); // the cloud player is an iframe and only gets keys while focused
+}
+
 window.addEventListener('keydown', (e) => {
-  if (NAV_KEYS.has(e.key) && !e.target.closest?.('input, textarea, button')) e.preventDefault();
+  const control = e.target.closest?.('.chat select, .chat button');
+  if (control && !e.altKey && !e.ctrlKey && !e.metaKey &&
+      (WALK_KEYS.has(e.key) || (control.tagName === 'SELECT' && e.key.length === 1))) {
+    e.preventDefault();
+    returnFocusToScene(control);
+    return;
+  }
+  if (SCROLL_KEYS.has(e.key) && !e.target.closest?.('input, textarea, select, button')) e.preventDefault();
 });
 
 // A click is needed before the browser lets the page speak, play the stream or use the mic.
