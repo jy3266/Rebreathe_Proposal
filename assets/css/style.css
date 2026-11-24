@@ -1369,7 +1369,95 @@ kbd {
   .game { aspect-ratio: auto; height: 74vh; min-height: 380px; }
 }
 
+/* ==========================================================
+   첫 화면: 리브리드 / 스타그라운드 고르기
+   왼쪽은 리브리드(밝은 바다빛), 오른쪽은 스타그라운드(그 사이트의 어두운 바탕과 주황 궤도).
+   JS가 있을 때, <head> 스크립트가 html.gate-open 을 붙인 경우에만 보인다.
+   ========================================================== */
+.gate { display: none; }
+html.js.gate-open .gate,
+.gate.is-leaving {
+  position: fixed; inset: 0; z-index: 1000;
+  display: grid; grid-template-columns: 1fr 1fr;
+}
+html.js.gate-open, html.js.gate-open body { overflow: hidden; }
+.gate:focus { outline: none; }
+.gate.is-leaving { opacity: 0; pointer-events: none; transition: opacity .45s ease; }
+
+.gate__side {
+  position: relative; overflow: hidden;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+  margin: 0; padding: 56px 28px; border: 0; border-radius: 0;
+  font: inherit; text-align: center; text-decoration: none; cursor: pointer;
+}
+.gate__side--rebreathe {
+  background: radial-gradient(circle at 50% 40%, #ffffff 0%, var(--bg-tint) 58%, var(--bg-deep) 100%);
+  color: var(--navy);
+}
+.gate__side--starground {
+  background: radial-gradient(circle at 50% 40%, #162127 0%, #10171b 45%, #0a0f12 100%);
+  color: #e8f0f2;
+}
+.gate__side:focus-visible { outline: 3px solid var(--sky); outline-offset: -12px; }
+.gate__side--starground:focus-visible { outline-color: #e8913c; }
+
+.gate__logo {
+  display: grid; place-items: center;
+  width: clamp(104px, 13vw, 168px); aspect-ratio: 1; margin-bottom: 10px;
+  transition: transform .45s cubic-bezier(.2, .8, .2, 1);
+}
+.gate__logo img, .gate__logo svg { display: block; width: 100%; height: 100%; object-fit: contain; }
+.gate__side--starground .gate__logo svg { filter: drop-shadow(0 0 22px rgba(232, 145, 60, .35)); }
+.gate__side:hover .gate__logo, .gate__side:focus-visible .gate__logo { transform: scale(1.07); }
+
+.gate__name { font-size: clamp(24px, 2.7vw, 36px); font-weight: 900; letter-spacing: .06em; line-height: 1.1; }
+.gate__side--starground .gate__name {
+  font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-weight: 700; font-style: italic; letter-spacing: .14em;
+}
+.gate__desc { font-size: 15px; font-weight: 500; opacity: .72; }
+.gate__side--starground .gate__desc { opacity: .62; }
+
+.gate__go {
+  margin-top: 14px; padding: 11px 22px; border-radius: 999px;
+  font-size: 14px; font-weight: 700; transition: background .2s, color .2s, border-color .2s;
+}
+.gate__side--rebreathe .gate__go { background: var(--navy); color: #fff; border: 1px solid var(--navy); }
+.gate__side--rebreathe:hover .gate__go { background: var(--sky); border-color: var(--sky); }
+.gate__side--starground .gate__go { color: #e8913c; border: 1px solid rgba(232, 145, 60, .7); }
+.gate__side--starground:hover .gate__go { background: #e8913c; color: #0a0f12; border-color: #e8913c; }
+
+.gate__or {
+  position: absolute; left: 50%; top: 50%; z-index: 2; transform: translate(-50%, -50%);
+  display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%;
+  background: #fff; color: var(--navy); font-size: 13px; font-weight: 700;
+  box-shadow: 0 6px 20px rgba(10, 15, 18, .28); pointer-events: none;
+}
+
+.gate__lang {
+  position: absolute; top: 18px; right: 18px; z-index: 3;
+  display: flex; gap: 2px; padding: 3px; border-radius: 999px;
+  background: rgba(255, 255, 255, .92); box-shadow: 0 2px 10px rgba(10, 15, 18, .18);
+}
+.gate__lang button {
+  border: 0; border-radius: 999px; padding: 5px 11px; background: transparent; cursor: pointer;
+  font: inherit; font-size: 12.5px; font-weight: 700; color: var(--ink-2, #4a5374);
+}
+.gate__lang button.is-on { background: var(--navy); color: #fff; }
+.gate__lang button:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
+
+@media (max-width: 720px) {
+  html.js.gate-open .gate, .gate.is-leaving { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
+  .gate__side { padding: 36px 20px; gap: 8px; }
+  .gate__logo { width: 92px; margin-bottom: 4px; }
+  .gate__go { margin-top: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gate.is-leaving, .gate__logo, .gate__go { transition: none; }
+}
+
 @media print {
+  .gate { display: none !important; }
   .nav, .totop, .skip-link, .scrollbar, .section--play { display: none !important; }
   .reveal { opacity: 1 !important; transform: none !important; }
   .section { padding: 24px 0; }

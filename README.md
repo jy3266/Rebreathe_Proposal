@@ -15,7 +15,7 @@ index.html              사이트 본문 (한국어 원문 + data-en 영문)
 assets/
   css/style.css         전체 스타일
   js/i18n.js            한국어 / English 전환 엔진
-  js/main.js            스크롤 애니메이션 · 네비게이션 · 카운터
+  js/main.js            스크롤 애니메이션 · 네비게이션 · 카운터 · 첫 화면(사이트 고르기)
   js/stage3d.js         '바다와 함께 걷기' 3D 체험을 어디서 띄울지 고른다 (시연 PC / 클라우드 / 2D)
   js/game.js            '바다와 함께 걷기' 2D 상담 데모 (3D를 열 수 없을 때 대신 보임)
   img/                  사진 · 스크린샷
@@ -52,6 +52,18 @@ git push
 푸시하고 1~2분 뒤 공개 주소에 반영됩니다.
 `?lang=en` 을 붙이면 영문으로 바로 열립니다 —
 https://jy3266.github.io/Rebreathe_Proposal/?lang=en
+
+## 첫 화면: 리브리드 / 스타그라운드 고르기
+
+사이트에 처음 들어오면 화면이 둘로 나뉜 선택 화면이 먼저 뜹니다.
+왼쪽 **REBREATHE**(로고 · "사이트 보기")를 누르면 이 사이트가, 오른쪽 **STARGROUND**를 누르면
+https://jy3266.github.io/Starground_Inc/ 로 이동합니다. 휴대폰에서는 위/아래로 나뉩니다.
+
+- 한 번 리브리드를 고르면 같은 탭에서는 다시 뜨지 않습니다(`sessionStorage`의 `rb-gate`).
+- `#play` 처럼 특정 구간 주소로 바로 들어오면 건너뜁니다. `?gate=1`은 항상 띄우고, `?gate=0`은 띄우지 않습니다.
+- 띄울지는 `index.html` `<head>`의 스크립트가 미리 정해서(본문이 잠깐 보였다 가려지지 않게), 동작은 `main.js` 9번,
+  모양은 `style.css` 끝의 "첫 화면" 부분입니다. Esc는 리브리드를 고른 것과 같습니다.
+- STARGROUND 로고와 글꼴(IBM Plex Mono)은 스타그라운드 사이트의 것을 그대로 씁니다.
 
 ## '바다와 함께 걷기' 3D 체험은 어떻게 연결되나
 

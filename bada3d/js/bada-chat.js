@@ -1,6 +1,8 @@
 // Voice-only conversation with "바다":
 //   mic (voice.js detects one utterance) -> Worker /stt (Whisper) -> Worker /chat (Claude)
 //   -> speechSynthesis, then listen again. No typing.
+// The child may talk in Korean or English whatever the page language: /stt detects which, Claude
+// answers in the child's language, and each spoken sentence gets a Korean or English voice.
 // Each step is mirrored to Unreal through the bridge (Bada turns to the child, bobs while talking).
 
 import { CONFIG } from './config.js';
@@ -124,9 +126,11 @@ if (CONFIG.stream === 'e3ds') {
   }, 15000);
 }
 
+// The child may speak either language, so check both word lists.
 function isRisk(text) {
-  const flat = KO ? text.replace(/\s/g, '') : text.toLowerCase();
-  return (KO ? SAFETY_KO : SAFETY_EN).some((w) => flat.includes(w));
+  const flat = text.replace(/\s/g, '');
+  const lower = text.toLowerCase();
+  return SAFETY_KO.some((w) => flat.includes(w)) || SAFETY_EN.some((w) => lower.includes(w));
 }
 
 // ---------- Conversation state (shown on the mic button) ----------
@@ -166,30 +170,45 @@ function setLevel(level) {
 // ---------- Speech out ----------
 
 const synth = window.speechSynthesis;
-let voice = null;
+const voices = { ko: null, en: null }; // one voice per language Bada may speak
 let speaking = 0; // utterances queued or playing
 let speechGen = 0; // bumped by stopSpeaking(); callbacks of cancelled utterances are ignored
 let replyStreaming = false;
 let replyId = 0;
 let silencedReply = -1; // the child talked over this reply: show the rest, don't speak it
 
-function pickVoice() {
+// Prefer the natural-sounding online voices Chrome/Edge provide, in the main region
+// (ko-KR, en-US), then any voice of that region, then any voice of the language.
+function bestVoice(list, region) {
+  const natural = (v) => /Natural|Online|Google/i.test(v.name);
+  const inRegion = (v) => v.lang.replace('_', '-').toLowerCase() === region;
+  return list.find((v) => natural(v) && inRegion(v)) || list.find(inRegion) ||
+    list.find(natural) || list[0] || null;
+}
+function pickVoices() {
   if (!synth) return;
-  const want = KO ? 'ko' : 'en';
-  const voices = synth.getVoices().filter((v) => v.lang.toLowerCase().startsWith(want));
-  // Prefer the natural-sounding online voices Chrome/Edge provide.
-  voice = voices.find((v) => /Natural|Online|Google/i.test(v.name)) || voices[0] || null;
+  const all = synth.getVoices();
+  voices.ko = bestVoice(all.filter((v) => v.lang.toLowerCase().startsWith('ko')), 'ko-kr');
+  voices.en = bestVoice(all.filter((v) => v.lang.toLowerCase().startsWith('en')), 'en-us');
 }
 if (synth) {
-  pickVoice();
-  synth.addEventListener?.('voiceschanged', pickVoice);
+  pickVoices();
+  synth.addEventListener?.('voiceschanged', pickVoices);
+}
+
+// Which voice reads a sentence: Korean if it has Hangul, English if it has Latin letters.
+function languageOf(text) {
+  if (/[ㄱ-ㆎ가-힣]/.test(text)) return 'ko';
+  if (/[a-z]/i.test(text)) return 'en';
+  return CONFIG.lang;
 }
 
 function speak(sentence, forReply = replyId) {
   if (!voiceOn || !synth || !sentence.trim() || forReply === silencedReply) return;
+  const lang = languageOf(sentence);
   const u = new SpeechSynthesisUtterance(sentence);
-  u.lang = KO ? 'ko-KR' : 'en-US';
-  if (voice) u.voice = voice;
+  u.lang = lang === 'ko' ? 'ko-KR' : 'en-US';
+  if (voices[lang]) u.voice = voices[lang];
   u.rate = 1.0;
   u.pitch = 1.1;
   const gen = speechGen;
@@ -206,7 +225,7 @@ function speak(sentence, forReply = replyId) {
     }
   };
   // Some browsers occasionally never fire `end`; don't let that freeze the conversation.
-  const watchdog = setTimeout(finish, 4000 + sentence.length * (KO ? 320 : 130));
+  const watchdog = setTimeout(finish, 4000 + sentence.length * (lang === 'ko' ? 320 : 130));
   u.onstart = () => {
     touch();
     bridge?.send({ bada: 'speak_start', text: sentence });
@@ -272,7 +291,8 @@ async function onUtterance(wav) {
   bridge?.send({ bada: 'listen_end' });
   let text = '';
   try {
-    const res = await fetch(`${CONFIG.worker}/stt?lang=${CONFIG.lang}`, {
+    // Korean or English, detected per utterance; the page language decides when unsure.
+    const res = await fetch(`${CONFIG.worker}/stt?lang=auto&hint=${CONFIG.lang}`, {
       method: 'POST',
       headers: { 'Content-Type': 'audio/wav' },
       body: wav,

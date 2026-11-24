@@ -22,9 +22,55 @@
       document.documentElement.classList.remove('js');
     }
   }, 2500);
+
+  /* 첫 화면(리브리드 / 스타그라운드 고르기, main.js 9번)은 이 탭에서 아직 리브리드를 고르지 않았고
+     특정 구간(#play 등)으로 바로 들어온 게 아닐 때만 띄운다. ?gate=1 이면 항상, ?gate=0 이면 띄우지 않는다.
+     페이지가 그려지기 전에 정해 두어야 본문이 잠깐 보였다 가려지는 깜빡임이 없다. */
+  (function () {
+    var q = location.search, show;
+    try {
+      show = /[?&]gate=1/.test(q) || (!/[?&]gate=0/.test(q) && location.hash.length < 2 &&
+        sessionStorage.getItem('rb-gate') !== 'rebreathe');
+    } catch (e) { show = false; }
+    document.documentElement.classList.add(show ? 'gate-open' : 'gate-skip');
+  })();
 </script>
+<!-- 첫 화면의 STARGROUND 글자 (스타그라운드 사이트와 같은 IBM Plex Mono, 이 열 글자만 받는다) -->
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@1,700&text=STARGROUND&display=swap" rel="stylesheet" />
 </head>
 <body>
+
+<!-- ============ 첫 화면: 리브리드 / 스타그라운드 고르기 (main.js 9번, 띄울지는 <head> 스크립트가 정함) ============ -->
+<div class="gate" id="gate" role="dialog" aria-modal="true" aria-labelledby="gateTitle">
+  <h2 class="sr-only" id="gateTitle" data-en="Which site would you like to visit?">어느 사이트로 갈까요?</h2>
+
+  <button class="gate__side gate__side--rebreathe" id="gateRebreathe" type="button">
+    <span class="gate__logo"><img src="assets/img/logos/rebreathe-icon.webp" alt="" width="168" height="168" /></span>
+    <span class="gate__name">REBREATHE</span>
+    <span class="gate__desc" data-en="AI-powered mental care platform for children">AI 기반 아동 멘탈케어 플랫폼</span>
+    <span class="gate__go" data-en="Enter site">사이트 보기</span>
+  </button>
+
+  <a class="gate__side gate__side--starground" href="https://jy3266.github.io/Starground_Inc/">
+    <span class="gate__logo">
+      <!-- 스타그라운드 사이트의 로고 (궤도 + 중심점) -->
+      <svg viewBox="0 0 32 32" width="168" height="168" aria-hidden="true">
+        <ellipse cx="16" cy="16" rx="13" ry="5.6" fill="none" stroke="#E8913C" stroke-width="1.6" transform="rotate(-16 16 16)" />
+        <circle cx="16" cy="16" r="2.6" fill="#E8F0F2" />
+      </svg>
+    </span>
+    <span class="gate__name">STARGROUND</span>
+    <span class="gate__desc" data-en="Carbon data trust platform">탄소데이터 신뢰 플랫폼</span>
+    <span class="gate__go" data-en="Go to Starground ↗">스타그라운드로 이동 ↗</span>
+  </a>
+
+  <span class="gate__or" aria-hidden="true" data-en="or">또는</span>
+
+  <div class="gate__lang" role="group" aria-label="언어" data-en-aria-label="Language">
+    <button type="button" data-lang="ko" aria-pressed="true" lang="ko">한국어</button>
+    <button type="button" data-lang="en" aria-pressed="false" lang="en">EN</button>
+  </div>
+</div>
 
 <a class="skip-link" href="#main" data-en="Skip to main content">본문으로 건너뛰기</a>
 
@@ -404,8 +450,8 @@
     <header class="sec-head sec-head--center reveal">
       <p class="sec-head__tag">Try it</p>
       <h2 class="sec-head__title" data-en="Walk with Bada">바다와 함께 걷기</h2>
-      <p class="sec-head__desc" data-en="Walk through a &lt;b&gt;3D park built in Unreal Engine together with Bada&lt;/b&gt; and talk with your voice alone — no typing. Bada listens, and answers out loud with words written on the spot by AI.">
-        언리얼 엔진으로 만든 <b>3D 공원을 바다와 함께 걸으며</b> 키보드 없이 목소리로만 이야기를 나누는 체험입니다.
+      <p class="sec-head__desc" data-en="Walk through a &lt;b&gt;3D park built in Unreal Engine together with Bada&lt;/b&gt; and talk with your voice alone, in English or Korean — no typing. Bada listens, and answers out loud with words written on the spot by AI.">
+        언리얼 엔진으로 만든 <b>3D 공원을 바다와 함께 걸으며</b> 키보드 없이 목소리로만(한국어·영어) 이야기를 나누는 체험입니다.
         바다가 귀 기울여 듣고, AI가 그 자리에서 만든 말로 소리 내어 대답해요.
       </p>
     </header>

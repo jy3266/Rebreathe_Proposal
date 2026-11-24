@@ -204,4 +204,51 @@
   var mediaBlock = document.querySelector('.solution__media');
   if (mediaBlock) mediaBlock.classList.add('reveal--left');
   document.querySelectorAll('.flow > li').forEach(function (li) { li.classList.add('reveal--right'); });
+
+  /* ---------- 9. 첫 화면: 리브리드 / 스타그라운드 고르기 ---------- */
+  /* 띄울지는 <head> 스크립트가 정한다(html.gate-open). 리브리드를 고르면 첫 화면이 걷히고 이 탭에서는
+     다시 뜨지 않는다. 스타그라운드 쪽은 평범한 링크라 그 사이트로 이동한다. */
+  var gate = document.getElementById('gate');
+  var root = document.documentElement;
+  if (gate && root.classList.contains('gate-open')) {
+    var enter = document.getElementById('gateRebreathe');
+    var closed = false;
+    var closeGate = function () {
+      if (closed) return;
+      closed = true;
+      try { sessionStorage.setItem('rb-gate', 'rebreathe'); } catch (e) { /* 사생활 보호 모드 */ }
+      gate.classList.add('is-leaving');
+      root.classList.remove('gate-open');
+      root.classList.add('gate-skip');
+      var finish = function () {
+        gate.hidden = true;
+        gate.classList.remove('is-leaving');
+      };
+      if (reduceMotion) finish();
+      else setTimeout(finish, 500); /* .gate.is-leaving 의 opacity 전환 시간 */
+      var brand = document.querySelector('.nav .brand');
+      if (brand) brand.focus({ preventScroll: true });
+    };
+    enter.addEventListener('click', closeGate);
+    gate.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') { e.preventDefault(); closeGate(); return; }
+      if (e.key !== 'Tab') return;
+      /* 첫 화면이 떠 있는 동안 포커스는 그 안에서만 돈다 */
+      var items = gate.querySelectorAll('button, a[href]');
+      var first = items[0];
+      var last = items[items.length - 1];
+      if (e.shiftKey && (document.activeElement === first || document.activeElement === gate)) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    });
+    /* 화면 읽기 프로그램이 첫 화면부터 읽도록 (테두리는 그리지 않는다) */
+    gate.setAttribute('tabindex', '-1');
+    gate.focus({ preventScroll: true });
+  } else if (gate) {
+    gate.hidden = true;
+  }
 })();
