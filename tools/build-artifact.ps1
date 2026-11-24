@@ -20,6 +20,7 @@ $css  = [System.IO.File]::ReadAllText((Join-Path $PROJ 'assets\css\style.css'))
 $i18n = [System.IO.File]::ReadAllText((Join-Path $PROJ 'assets\js\i18n.js'))
 $main = [System.IO.File]::ReadAllText((Join-Path $PROJ 'assets\js\main.js'))
 $game = [System.IO.File]::ReadAllText((Join-Path $PROJ 'assets\js\game.js'))
+$s3d  = [System.IO.File]::ReadAllText((Join-Path $PROJ 'assets\js\stage3d.js'))
 
 # ---- 1. 이미지 경로 -> data URI ----
 $refs = [System.Collections.Generic.HashSet[string]]::new()
@@ -36,7 +37,8 @@ $pairs = @(
   @('<link rel="stylesheet" href="assets/css/style.css" />', "<style>`n$css`n</style>"),
   @('<script src="assets/js/i18n.js"></script>', "<script>`n$i18n`n</script>"),
   @('<script src="assets/js/main.js"></script>', "<script>`n$main`n</script>"),
-  @('<script src="assets/js/game.js"></script>', "<script>`n$game`n</script>")
+  @('<script src="assets/js/game.js"></script>', "<script>`n$game`n</script>"),
+  @('<script src="assets/js/stage3d.js"></script>', "<script>`n$s3d`n</script>")
 )
 foreach ($p in $pairs) {
   if (-not $html.Contains($p[0])) { throw ("tag not found: " + $p[0]) }

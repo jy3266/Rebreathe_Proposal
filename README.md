@@ -16,7 +16,8 @@ assets/
   css/style.css         전체 스타일
   js/i18n.js            한국어 / English 전환 엔진
   js/main.js            스크롤 애니메이션 · 네비게이션 · 카운터
-  js/game.js            '바다와 함께 걷기' 2D 상담 데모
+  js/stage3d.js         '바다와 함께 걷기' 3D 체험 (리브리드 PC의 언리얼 빌드를 iframe으로)
+  js/game.js            '바다와 함께 걷기' 2D 상담 데모 (3D 시연 PC가 꺼져 있을 때 대신 보임)
   img/                  사진 · 스크린샷
 tools/
   build-artifact.ps1    단일 HTML로 묶는 빌드 스크립트 (Artifact 게시용)
@@ -46,6 +47,20 @@ git push
 푸시하고 1~2분 뒤 공개 주소에 반영됩니다.
 `?lang=en` 을 붙이면 영문으로 바로 열립니다 —
 https://jy3266.github.io/Rebreathe_Proposal/?lang=en
+
+## '바다와 함께 걷기' 3D 체험은 어떻게 연결되나
+
+체험 구간(`#play`)은 리브리드 팀 PC에서 돌아가는 언리얼 빌드를 Pixel Streaming으로 보여 줍니다.
+
+1. 시연 PC에서 `start-demo.bat`을 실행하면 시그널링 서버 · 언리얼 빌드 · Cloudflare 터널이 켜지고,
+   `register-stream.ps1`이 이번 터널 주소(`https://….trycloudflare.com`, 켤 때마다 바뀜)를
+   대화 서버(Cloudflare Worker)의 KV에 저장합니다.
+2. 사이트의 `assets/js/stage3d.js`가 체험 구간 근처에 오면 Worker의 `GET /stream`에 묻고,
+   PC가 켜져 있으면 그 주소의 시연 페이지(3D 화면 + 바다와의 대화창)를 iframe으로 띄웁니다.
+3. PC가 꺼져 있으면 안내 문구와 함께 **2D로 바닷가 걷기** 버튼을 보여 주고, 누르면 기존 2D 데모가 나옵니다.
+
+즉 사이트는 다시 배포할 필요 없이, 시연 PC를 켜 두기만 하면 3D 체험이 열립니다.
+Worker 주소는 `stage3d.js` 맨 위 `WORKER` 값입니다.
 
 ## 언어 전환은 어떻게 동작하나
 
