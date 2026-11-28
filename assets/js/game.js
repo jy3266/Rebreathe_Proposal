@@ -541,7 +541,7 @@
     var s = scaleOf(o.d) * (H / 460);
     var y = groundY(o.d) - 66 * s - Math.sin(t * 2.2) * 2;
 
-    ctx.font = '600 ' + Math.round(13 * Math.max(0.9, H / 560)) + 'px "Noto Sans KR", sans-serif';
+    ctx.font = '600 ' + Math.round(13 * Math.max(0.9, H / 560)) + 'px "Pretendard Variable", Pretendard, "Noto Sans KR", sans-serif';
     var w = Math.min(ctx.measureText(text).width + 22, W * 0.6);
     var h = 30;
     var bx = clamp(sx - w / 2, 10, W - w - 10);

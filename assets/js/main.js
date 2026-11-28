@@ -146,59 +146,54 @@
     counters.forEach(runCounter);
   }
 
-  /* ---------- 5. 스크롤 진행 막대 + 히어로 패럴랙스 ---------- */
-  var progress = document.getElementById('scrollProgress');
-  var heroImg = document.querySelector('.hero__bg img');
-  var heroSection = document.querySelector('.hero');
+  /* ---------- 5. 스크롤에 맞춘 움직임 ----------
+     · 히어로 장면: 장면의 윗변이 메뉴 바로 아래에 닿을 때까지 폭이 화면 끝까지 넓어진다 (--p 0→1)
+     · 선언 제목: 화면 85% 지점에서 35% 지점으로 올라가는 동안 줄마다 왼쪽부터 칠해진다 (--frac 0→1)
+     모션을 줄이는 설정이면 둘 다 멈춘 모습 그대로 둔다(CSS 기본값). */
+  var hero = document.querySelector('.hero');
+  var heroVisual = document.querySelector('.hero__visual');
+  var fillLines = document.querySelectorAll('.statement__line');
+  var fillTitle = fillLines.length ? fillLines[0].parentNode : null;
   var ticking = false;
+
+  function clamp01(v) { return v < 0 ? 0 : (v > 1 ? 1 : v); }
 
   function onScrollFrame() {
     ticking = false;
-    var doc = document.documentElement;
-    var max = doc.scrollHeight - window.innerHeight;
-    var ratio = max > 0 ? Math.min(window.scrollY / max, 1) : 0;
-    if (progress) progress.style.width = (ratio * 100).toFixed(2) + '%';
+    if (reduceMotion) return;
+    var vh = window.innerHeight;
 
-    if (heroImg && !reduceMotion && heroSection) {
-      var h = heroSection.offsetHeight;
-      if (window.scrollY < h) {
-        var p = window.scrollY / h;
-        heroImg.style.transform = 'translate3d(0,' + (p * 14).toFixed(2) + '%,0) scale(' + (1 + p * 0.06).toFixed(3) + ')';
+    if (heroVisual) {
+      var startY = heroVisual.getBoundingClientRect().top + window.scrollY - nav.offsetHeight;
+      var p = startY > 0 ? clamp01(window.scrollY / startY) : 1;
+      heroVisual.style.setProperty('--p', p.toFixed(4));
+    }
+
+    if (fillTitle) {
+      var t = clamp01((vh * 0.85 - fillTitle.getBoundingClientRect().top) / (vh * 0.5));
+      var n = fillLines.length;
+      for (var i = 0; i < n; i++) {
+        fillLines[i].style.setProperty('--frac', clamp01(t * n - i).toFixed(4));
       }
     }
   }
 
-  window.addEventListener('scroll', function () {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(onScrollFrame);
-  }, { passive: true });
-  onScrollFrame();
-
-  /* ---------- 6. 카드 위 커서 빛 ---------- */
-  var fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-  if (fine && !reduceMotion) {
-    document.addEventListener('pointermove', function (e) {
-      var card = e.target.closest('.card');
-      if (!card) return;
-      var r = card.getBoundingClientRect();
-      card.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100).toFixed(1) + '%');
-      card.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100).toFixed(1) + '%');
+  if (!reduceMotion) {
+    window.addEventListener('scroll', function () {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(onScrollFrame);
     }, { passive: true });
+    window.addEventListener('resize', onScrollFrame, { passive: true });
+    onScrollFrame();
   }
 
-  /* ---------- 7. 자석 버튼 ---------- */
-  if (fine && !reduceMotion) {
-    document.querySelectorAll('.btn--magnet').forEach(function (btn) {
-      btn.addEventListener('pointermove', function (e) {
-        var r = btn.getBoundingClientRect();
-        var dx = (e.clientX - (r.left + r.width / 2)) / r.width;
-        var dy = (e.clientY - (r.top + r.height / 2)) / r.height;
-        btn.style.transform = 'translate(' + (dx * 10).toFixed(1) + 'px,' + (dy * 8).toFixed(1) + 'px)';
-      });
-      btn.addEventListener('pointerleave', function () { btn.style.transform = ''; });
-    });
+  /* 히어로 제목이 줄마다 올라온다. 첫 화면(9번)이 떠 있으면 그것이 걷힐 때 시작한다. */
+  function heroIn() {
+    if (!hero) return;
+    requestAnimationFrame(function () { hero.classList.add('is-in'); });
   }
+  if (!document.documentElement.classList.contains('gate-open')) heroIn();
 
   /* ---------- 8. 방향성 있는 등장 ---------- */
   var mediaBlock = document.querySelector('.solution__media');
@@ -220,6 +215,7 @@
       gate.classList.add('is-leaving');
       root.classList.remove('gate-open');
       root.classList.add('gate-skip');
+      heroIn();
       var finish = function () {
         gate.hidden = true;
         gate.classList.remove('is-leaving');

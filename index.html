@@ -9,9 +9,12 @@
 <meta property="og:description" content="아이에겐 매일 만나는 단짝 친구, 부모에겐 가장 정확한 마음 번역기" />
 <meta property="og:type" content="website" />
 <link rel="icon" href="assets/img/logos/rebreathe-icon.webp" />
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet" />
+<!-- 본문: Pretendard / 영문 제목·숫자: Poppins -->
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="assets/css/style.css" />
 <script>
   /* JS가 살아 있을 때만 등장 애니메이션을 켠다.
@@ -74,8 +77,6 @@
 
 <a class="skip-link" href="#main" data-en="Skip to main content">본문으로 건너뛰기</a>
 
-<div class="scrollbar" aria-hidden="true"><span id="scrollProgress"></span></div>
-
 <header class="nav" id="nav">
   <div class="wrap nav__inner">
     <a class="brand" href="#top">
@@ -114,35 +115,49 @@
 
 <!-- ============ HERO ============ -->
 <section class="hero" id="top">
-  <div class="hero__bg" aria-hidden="true">
-    <img src="assets/img/hero-scene.jpg" alt="" />
-    <div class="hero__veil"></div>
+  <div class="wrap">
+    <p class="hero__eyebrow" data-en="Multimodal AI · Virtual Reality · Blockchain">멀티모달 AI · 가상현실(VR) · 블록체인</p>
+    <!-- 줄마다 아래에서 위로 올라온다 (--d: 줄별 지연, main.js가 .is-in 을 붙인다) -->
+    <h1 class="hero__title">
+      <span class="sr-only" data-en="REBREATHE — ">리브리드(REBREATHE) — </span>
+      <span class="hero__line" style="--d:.1s"><span data-en="A best friend the child meets every day,">아이에겐 매일 만나는<br class="br-mo" /> 단짝 친구,</span></span>
+      <span class="hero__line" style="--d:.25s"><span data-en="the truest translator of that heart for parents">부모에겐 가장 정확한<br class="br-mo" /> 마음 번역기</span></span>
+    </h1>
+    <div class="hero__actions">
+      <a class="btn btn--primary" href="#play" data-en="Walk with Bada <span class='btn__tag'>Demo</span>">바다와 함께 걷기 <span class="btn__tag">체험</span></a>
+      <a class="btn btn--ghost" href="#solution" data-en="See the solution">솔루션 살펴보기</a>
+    </div>
   </div>
 
-  <div class="wrap hero__inner">
-    <p class="hero__eyebrow reveal" data-en="Multimodal AI · Virtual Reality · Blockchain">멀티모달 AI · 가상현실(VR) · 블록체인</p>
-    <h1 class="hero__title reveal" data-en="REBREATHE">
-      리브리드<span>(REBREATHE)</span>
-    </h1>
-    <p class="hero__lead reveal" data-en="A <b>best friend</b> the child meets every day,<br />the most accurate <b>translator of that heart</b> for parents">
-      아이에겐 매일 만나는 <b>단짝 친구</b>,<br />
-      부모에겐 가장 정확한 <b>마음 번역기</b>
-    </p>
-    <p class="hero__sub reveal" data-en="Children bond with an AI character through play, parents read their child&#39;s heart in a report —<br class='br-pc' />a two-way mental care solution built for ages 4 to 12">
-      아이는 AI 캐릭터와 놀이로 교감하고, 부모는 리포트로 아이의 마음을 읽는<br class="br-pc" />
-      4~12세 맞춤형 양방향 멘탈 케어 솔루션
-    </p>
-    <div class="hero__actions reveal">
-      <a class="btn btn--primary btn--magnet" href="#play" data-en="Walk with Bada <span class='btn__tag'>Demo</span>">바다와 함께 걷기 <span class="btn__tag">체험</span></a>
-      <a class="btn btn--ghost btn--magnet" href="#solution" data-en="See the solution">솔루션 살펴보기</a>
+  <!-- 스크롤하면 화면 끝까지 넓어진다 (main.js 5번이 --p 를 넣는다) -->
+  <figure class="hero__visual">
+    <img src="assets/img/hero-scene.jpg" width="1800" height="766" fetchpriority="high"
+         alt="햇살이 드는 3D 공원 한가운데, 빛에 둘러싸여 나타나는 부엉이 캐릭터"
+         data-en-alt="In the middle of a sunlit 3D park, an owl character appears wrapped in light" />
+  </figure>
+</section>
+
+<!-- ============ STATEMENT ============ -->
+<section class="statement" aria-labelledby="statementTitle">
+  <div class="wrap">
+    <!-- 스크롤하면 왼쪽부터 칠해진다 (main.js 5번이 --frac 을 넣는다) -->
+    <h2 class="statement__title" id="statementTitle" lang="en">
+      <span class="statement__line">Play becomes</span>
+      <span class="statement__line">Care</span>
+    </h2>
+    <div class="statement__desc reveal">
+      <p data-en="Children bond with an AI character through play,">아이는 AI 캐릭터와 놀이로 교감하고,</p>
+      <p data-en="and parents read their child&rsquo;s heart in a report.">부모는 리포트로 아이의 마음을 읽습니다.</p>
+      <p data-en="A two-way mental care solution built for ages 4 to 12">4~12세 맞춤형 양방향 멘탈 케어 솔루션</p>
     </div>
 
-    <ul class="hero__stats reveal">
+    <ul class="stats reveal">
       <li><b data-count="183000" data-suffix="명" data-en-suffix="">0</b><span data-en="children aged 0–12 treated for mental illness (2024)">0~12세 정신건강질환 환자 (2024)</span></li>
       <li><b data-count="76" data-suffix="%">0</b><span data-en="rise in patient numbers over the past 5 years">지난 5년간 환자 수 증가율</span></li>
       <li><b data-count="18.81" data-suffix="B" data-decimals="2">0</b><span data-en="target market size in 2031">2031년 목표 시장 규모</span></li>
     </ul>
   </div>
+  <div class="line-divider" aria-hidden="true"></div>
 </section>
 
 <!-- ============ PROBLEM ============ -->
@@ -1090,6 +1105,9 @@
 
 <!-- ============ CONTACT ============ -->
 <section class="closing" id="contact">
+  <div class="closing__bg" aria-hidden="true">
+    <img src="assets/img/hero-scene.jpg" alt="" loading="lazy" width="1800" height="766" />
+  </div>
   <div class="wrap closing__inner">
     <blockquote class="closing__quote reveal">
       <p lang="en">“There is no such thing as a baby.”</p>
