@@ -168,7 +168,7 @@ const VOICE_TEXT = {
   speaking: ['바다가 말하고 있어요 · 🎤 를 누르면 바로 말할 수 있어요', 'Bada is talking · tap 🎤 to talk right away'],
   paused: ['잠시 쉬는 중 · 🎤 를 누르면 다시 들어요', 'Paused · tap 🎤 to listen again'],
   missed: ['잘 못 들었어요. 한 번 더 말해 줄래요?', "I didn't catch that. Could you say it again?"],
-  nomic: ['마이크를 쓸 수 없어요. 마이크를 허용한 뒤 🎤 를 눌러 주세요', 'No microphone. Allow it, then tap 🎤'],
+  nomic: ['마이크를 쓸 수 없어요. 허용한 뒤 🎤 를 누르거나 ⌨️ 로 써 주세요', 'No microphone. Allow it and tap 🎤, or write with ⌨️'],
   error: ['연결이 잠깐 끊겼어요. 🎤 를 눌러 다시 말해 주세요', 'Connection hiccup. Tap 🎤 and say it again'],
   typing: ['글로 써서 보내 보세요 · 🎤 를 누르면 말로도 할 수 있어요', 'Write to Bada · tap 🎤 to talk instead'],
 };
@@ -809,14 +809,20 @@ el.startForm.addEventListener('submit', async (e) => {
   el.startOverlay.hidden = true;
   bridge?.play();
   el.start.blur();
-  const micReady = await startMic(); // asks for microphone permission here
+  // The greeting comes first in the log and the history even while the browser is still asking
+  // for the microphone: a child may already be typing (⌨️) during that prompt.
   addBubble('assistant', OPENING);
   history.push({ role: 'assistant', content: OPENING });
-  if (voiceOn && synth) speak(OPENING);
-  if (micReady && (!voiceOn || !synth)) listen();
+  const micReady = await startMic(); // asks for microphone permission here
+  if (childTurns() === 0) {
+    // Spoken only now, so that the microphone can take over when the greeting ends. If the child
+    // has written meanwhile, the conversation has moved on: don't say hello over it.
+    if (voiceOn && synth) speak(OPENING);
+    else if (micReady && !typing) listen();
+  }
   if (!micReady) addBubble('system', T(
-    '바다와 이야기하려면 마이크가 필요해요. 주소창 옆의 마이크 아이콘에서 허용한 뒤, 아래 🎤 를 눌러 주세요.',
-    'Bada needs your microphone. Allow it from the icon next to the address bar, then tap 🎤 below.'));
+    '바다와 말로 이야기하려면 마이크가 필요해요. 주소창 옆의 마이크 아이콘에서 허용한 뒤 아래 🎤 를 누르거나, 위의 ⌨️ 키보드로 써 주세요.',
+    'To talk with Bada, allow the microphone from the icon next to the address bar and tap 🎤 below, or write with ⌨️ above.'));
 });
 
 (async () => {
