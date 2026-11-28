@@ -75,7 +75,7 @@ const el = {
 
 // Static page text: Korean in the HTML, English in data-en / data-en-* attributes.
 if (!KO) {
-  document.title = 'Walk with Bada';
+  document.title = 'Walk Together';
   document.querySelectorAll('[data-en]').forEach((n) => { n.innerHTML = n.dataset.en; });
   document.querySelectorAll('[data-en-aria-label]').forEach((n) => n.setAttribute('aria-label', n.dataset.enAriaLabel));
   document.querySelectorAll('[data-en-placeholder]').forEach((n) => { n.placeholder = n.dataset.enPlaceholder; });
@@ -379,8 +379,8 @@ async function converse(text, { typed = false } = {}) {
     takeSentences(pending, true).sentences.forEach((s) => speak(s, id));
   } catch (err) {
     console.error(err);
-    reply = T('미안, 지금은 바다랑 연결이 잘 안 돼. 잠시 후에 다시 말해 줄래?',
-      'Sorry, I cannot reach Bada right now. Could you try again in a moment?');
+    reply = T('미안, 지금은 연결이 잘 안 돼. 잠시 후에 다시 말해 줄래?',
+      'Sorry, I cannot hear you well right now. Could you try again in a moment?');
     body.textContent = reply;
     history.pop(); // the child can simply say it again
     if (typed && !el.typeInput.value) el.typeInput.value = text; // or send the same words again
@@ -867,7 +867,7 @@ async function finishWalk() {
   if (reportState === 'working') return;
   if (reportState === 'done' && lastReport) { el.reportPanel.hidden = false; return; }
   if (childTurns() < 1) {
-    addBubble('system', T('바다와 한마디라도 나눈 뒤에 리포트를 만들 수 있어요.', 'Say something to Bada first, then I can make the report.'));
+    addBubble('system', T('친구와 한마디라도 나눈 뒤에 리포트를 만들 수 있어요.', 'Say something to your friend first, then I can make the report.'));
     return;
   }
   reportState = 'working';
@@ -884,7 +884,7 @@ async function finishWalk() {
   addBubble('assistant', bye);
   speak(bye);
 
-  el.reportBody.innerHTML = `<div class="report__loading"><i></i>${T('바다와 나눈 이야기를 읽고 마음 리포트를 만들고 있어요… (30초쯤 걸려요)', 'Reading the talk with Bada and writing the heart report… (about 30 seconds)')}</div>`;
+  el.reportBody.innerHTML = `<div class="report__loading"><i></i>${T('친구와 나눈 이야기를 읽고 마음 리포트를 만들고 있어요… (30초쯤 걸려요)', 'Reading the talk with your friend and writing the heart report… (about 30 seconds)')}</div>`;
   reportStatus('');
   el.reportPanel.hidden = false;
 
@@ -990,8 +990,8 @@ el.startForm.addEventListener('submit', async (e) => {
     else if (micReady && !typing) listen();
   }
   if (!micReady) addBubble('system', T(
-    '바다와 말로 이야기하려면 마이크가 필요해요. 주소창 옆의 마이크 아이콘에서 허용한 뒤 아래 🎤 를 누르거나, 위의 ⌨️ 키보드로 써 주세요.',
-    'To talk with Bada, allow the microphone from the icon next to the address bar and tap 🎤 below, or write with ⌨️ above.'));
+    '친구와 말로 이야기하려면 마이크가 필요해요. 주소창 옆의 마이크 아이콘에서 허용한 뒤 아래 🎤 를 누르거나, 위의 ⌨️ 키보드로 써 주세요.',
+    'To talk with your friend, allow the microphone from the icon next to the address bar and tap 🎤 below, or write with ⌨️ above.'));
 });
 
 (async () => {

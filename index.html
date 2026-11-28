@@ -124,7 +124,7 @@
       <span class="hero__line" style="--d:.25s"><span data-en="the truest translator of that heart for parents">부모에겐 가장 정확한<br class="br-mo" /> 마음 번역기</span></span>
     </h1>
     <div class="hero__actions">
-      <a class="btn btn--primary" href="#play" data-en="Walk with Bada <span class='btn__tag'>Demo</span>">바다와 함께 걷기 <span class="btn__tag">체험</span></a>
+      <a class="btn btn--primary" href="#play" data-en="Walk Together <span class='btn__tag'>Demo</span>">함께 걷기 <span class="btn__tag">체험</span></a>
       <a class="btn btn--ghost" href="#solution" data-en="See the solution">솔루션 살펴보기</a>
     </div>
   </div>
@@ -464,17 +464,18 @@
   <div class="wrap">
     <header class="sec-head sec-head--center reveal">
       <p class="sec-head__tag">Try it</p>
-      <h2 class="sec-head__title" data-en="Walk with Bada">바다와 함께 걷기</h2>
-      <p class="sec-head__desc" data-en="Walk through a &lt;b&gt;3D park built in Unreal Engine together with Bada&lt;/b&gt; and talk with your voice, in English or Korean (or type, if you would rather). Bada listens, and answers out loud with words written on the spot by AI.">
-        언리얼 엔진으로 만든 <b>3D 공원을 바다와 함께 걸으며</b> 목소리로(한국어·영어, 원하면 키보드로도) 이야기를 나누는 체험입니다.
-        바다가 귀 기울여 듣고, AI가 그 자리에서 만든 말로 소리 내어 대답해요.
+      <h2 class="sec-head__title" data-en="Walk Together">함께 걷기</h2>
+      <p class="sec-head__desc" data-en="Pick a friend — Cozy the bear, Breezy the cat or Hoho the owl — and walk through a &lt;b&gt;3D park built in Unreal Engine together&lt;/b&gt;, talking with your voice in English or Korean (or type, if you would rather). Your friend listens and answers out loud with words written on the spot by AI. Pick up treats on the way, and help your friend find the toilet when nature calls!">
+        곰 포근이, 고양이 살랑이, 부엉이 호호 중 한 친구를 골라 언리얼 엔진으로 만든 <b>3D 공원을 함께 걸으며</b>
+        목소리로(한국어·영어, 원하면 키보드로도) 이야기를 나누는 체험입니다. 친구가 귀 기울여 듣고,
+        AI가 그 자리에서 만든 말로 소리 내어 대답해요. 걷다가 선물도 줍고, 친구가 똥이 마려우면 화장실도 찾아 줘요!
       </p>
     </header>
 
     <!-- 3D 체험: 리브리드 팀 PC 또는 Eagle 3D Streaming 클라우드의 언리얼 빌드를 띄운다 (assets/js/stage3d.js, bada3d/) -->
     <div class="stage3d reveal" id="stage3d" data-state="idle">
       <iframe class="stage3d__frame" id="stage3dFrame" hidden
-              title="바다와 함께 걷기 3D 체험" data-en-title="Walk with Bada — 3D experience"
+              title="함께 걷기 3D 체험" data-en-title="Walk Together — 3D experience"
               allow="microphone; autoplay; fullscreen; clipboard-write" allowfullscreen></iframe>
       <div class="stage3d__panel" id="stage3dPanel">
         <div class="stage3d__card">
@@ -495,9 +496,9 @@
     </div>
     <!-- 안내 문구: 보관되는 것은 메일로 받기로 한 리포트뿐이고(이름·이메일 없이 무작위 식별번호로 암호화, 1년),
          그 식별번호는 이용자에게 전달되지 않는다 (chat-worker/src/archive.ts). 바꿀 때 이 사실과 어긋나지 않게. -->
-    <p class="game__disclaimer stage3d__note reveal" id="stage3dNote" data-en="⚠️ This demo is a scaled-down version of the real model. Your voice and the conversation are sent to AI (Cloudflare · Anthropic) only to write Bada&rsquo;s replies and the report, and no recording or conversation is stored. Only if you choose to receive the report by email is that report kept — encrypted under a unique ID, with no name or email address attached — for one year. It is no substitute for medical diagnosis or treatment.">
+    <p class="game__disclaimer stage3d__note reveal" id="stage3dNote" data-en="⚠️ This demo is a scaled-down version of the real model. Your voice and the conversation are sent to AI (Cloudflare · Anthropic) only to write your friend&rsquo;s replies and the report, and no recording or conversation is stored. Only if you choose to receive the report by email is that report kept — encrypted under a unique ID, with no name or email address attached — for one year. It is no substitute for medical diagnosis or treatment.">
       ⚠️ 본 시연은 실제 모델의 최소화 버전입니다.
-      목소리와 대화는 바다의 대답과 리포트를 만드는 데에만 AI(Cloudflare·Anthropic)로 전송되며, 녹음이나 대화는 저장되지 않습니다.
+      목소리와 대화는 친구의 대답과 리포트를 만드는 데에만 AI(Cloudflare·Anthropic)로 전송되며, 녹음이나 대화는 저장되지 않습니다.
       리포트를 메일로 받기로 한 경우에만 그 리포트를 이름·이메일 없이 고유 식별번호로 암호화해 1년간 보관합니다.
       단, 이는 의학적 진단·치료를 대신하지 않습니다.
     </p>
@@ -564,7 +565,7 @@
 
         <div class="game__bottom">
           <div class="game__bubble">
-            <span class="game__who" id="gameSubtitleWho">바다</span>
+            <span class="game__who" id="gameSubtitleWho">호호</span>
             <p class="game__sub" id="gameSubtitle">…</p>
           </div>
 

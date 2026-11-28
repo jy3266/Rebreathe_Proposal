@@ -1,5 +1,5 @@
 /* =============================================================
-   리브리드 — '바다와 함께 걷기'
+   리브리드 — '함께 걷기' (2D 바닷가 버전)
    2D 캔버스 해변 산책 + 텍스트 기반 아동 정서 상담 데모
    ============================================================= */
 (function () {
@@ -438,7 +438,7 @@
     ctx.restore();
   }
 
-  /* 동행 캐릭터 '바다' (부엉이) */
+  /* 동행 캐릭터 '호호' (부엉이, 3D 체험의 세 친구 중 하나) */
   function drawBuddy(o, t) {
     var sx = o.x - cam.x + viewCX();
     var gy = groundY(o.d);
@@ -738,9 +738,9 @@
   Counselor.prototype.opening = function () {
     this.stage = 'explore';
     return {
-      say: T('안녕! 나는 바다야. 오늘 파도 소리가 참 좋다. 방향키로 같이 걸어보자. ' +
+      say: T('안녕! 나는 부엉이 호호야. 오늘 파도 소리가 참 좋다. 방향키로 같이 걸어보자. ' +
              '있잖아, 오늘 너한테는 어떤 일이 있었어?',
-             'Hi! I am Bada. The waves sound lovely today. Use the arrow keys and walk with me. ' +
+             'Hi! I'm Hoho the owl. The waves sound lovely today. Use the arrow keys and walk with me. ' +
              'So tell me — how was your day?'),
       float: T('같이 걸을까?', 'Shall we walk?'),
       mood: 0.5,
@@ -1088,7 +1088,7 @@
   var lastWho = 'buddy';   // 'buddy' | 'me' — 언어가 바뀌어도 누가 말했는지 기억한다
 
   function whoLabel(role) {
-    return role === 'me' ? T('나', 'Me') : T('바다', 'Bada');
+    return role === 'me' ? T('나', 'Me') : T('호호', 'Hoho');
   }
 
   function setSubtitle(role, text) {

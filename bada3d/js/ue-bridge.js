@@ -55,7 +55,7 @@ const E3DS_HOST = /(^|\.)eagle3dstreaming\.com$/;
 function createE3dsBridge(config, container, onStatus) {
   const iframe = document.createElement('iframe');
   iframe.className = 'stage__frame';
-  iframe.title = 'Bada 3D stream';
+  iframe.title = 'Walk Together 3D stream';
   iframe.allow = 'autoplay; fullscreen';
   iframe.allowFullscreen = true;
 
