@@ -52,6 +52,8 @@ GitHub Pages는 **main 브랜치 / (root)** 에서 배포하도록 설정되어 
   - `www` CNAME → `jy3266.github.io`
   - `@` A → `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`
     (`rebreathe.net` 으로 들어오면 `www` 로 이동)
+  - `_github-pages-challenge-jy3266` TXT → `rebreathe.net` 을 GitHub 계정(jy3266)의 확인된 도메인으로
+    유지하는 값입니다. 지우면 확인이 풀려 다른 GitHub 계정이 이 도메인에 페이지를 올릴 수 있게 되니 그대로 둡니다.
   - `service`, `www.landing`, `_917fe…`(인증서 확인용) 레코드는 다른 서비스 것이므로 건드리지 않습니다.
 - 대화 Worker(chat-worker)의 `ALLOWED_ORIGINS` 에 `https://www.rebreathe.net` 이 있어야 바다와 대화가 됩니다.
 
