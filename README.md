@@ -37,11 +37,23 @@ tools/
 
 ## 공개 주소
 
-**https://jy3266.github.io/Rebreathe_Proposal/**
+**https://www.rebreathe.net/**
 
 저장소: https://github.com/jy3266/Rebreathe_Proposal
 GitHub Pages는 **main 브랜치 / (root)** 에서 배포하도록 설정되어 있습니다.
 `.nojekyll` 파일이 있어 Jekyll 처리를 건너뛰고 파일을 그대로 서빙합니다.
+
+### 도메인 (www.rebreathe.net)
+
+- GitHub Pages 사용자 지정 도메인이 `www.rebreathe.net` 입니다. 저장소 루트의 `CNAME` 파일이 이 설정이므로
+  지우지 마세요. 예전 주소 https://jy3266.github.io/Rebreathe_Proposal/ 는 새 주소로 자동 이동합니다.
+- 도메인 등록은 Squarespace, DNS는 **AWS Route 53**(호스팅 영역 `rebreathe.net`)에서 관리합니다.
+  Squarespace의 DNS 화면에 보이는 레코드는 쓰이지 않습니다(네임서버가 Route 53을 가리킴).
+  - `www` CNAME → `jy3266.github.io`
+  - `@` A → `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`
+    (`rebreathe.net` 으로 들어오면 `www` 로 이동)
+  - `service`, `www.landing`, `_917fe…`(인증서 확인용) 레코드는 다른 서비스 것이므로 건드리지 않습니다.
+- 대화 Worker(chat-worker)의 `ALLOWED_ORIGINS` 에 `https://www.rebreathe.net` 이 있어야 바다와 대화가 됩니다.
 
 ### 수정한 내용을 반영하려면
 
@@ -53,7 +65,7 @@ git push
 
 푸시하고 1~2분 뒤 공개 주소에 반영됩니다.
 `?lang=en` 을 붙이면 영문으로 바로 열립니다 —
-https://jy3266.github.io/Rebreathe_Proposal/?lang=en
+https://www.rebreathe.net/?lang=en
 
 ## 첫 화면: 리브리드 / 스타그라운드 고르기
 
