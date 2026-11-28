@@ -740,7 +740,7 @@
     return {
       say: T('안녕! 나는 부엉이 호호야. 오늘 파도 소리가 참 좋다. 방향키로 같이 걸어보자. ' +
              '있잖아, 오늘 너한테는 어떤 일이 있었어?',
-             'Hi! I'm Hoho the owl. The waves sound lovely today. Use the arrow keys and walk with me. ' +
+             'Hi! I am Hoho the owl. The waves sound lovely today. Use the arrow keys and walk with me. ' +
              'So tell me — how was your day?'),
       float: T('같이 걸을까?', 'Shall we walk?'),
       mood: 0.5,
