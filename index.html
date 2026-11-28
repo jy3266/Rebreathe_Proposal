@@ -493,11 +493,13 @@
       <button class="stage3d__tool" id="stage3dFull" type="button" data-en="⛶ Full screen">⛶ 전체 화면</button>
       <a class="stage3d__tool" id="stage3dOpen" href="#play" target="_blank" rel="noopener" data-en="↗ Open in a new tab">↗ 새 창에서 열기</a>
     </div>
-    <p class="game__disclaimer stage3d__note reveal" id="stage3dNote" data-en="⚠️ The 3D experience is a &lt;b&gt;demo build in development&lt;/b&gt;, streamed live from a REBREATHE team PC or, when that PC is off, from a cloud GPU. On the team PC everyone connected at the same time shares the same scene; in the cloud you may wait a moment when many people are walking. Your voice is sent to Cloudflare Workers AI to be turned into text, and the conversation to an AI (Anthropic Claude) to write Bada&rsquo;s replies; no recording or conversation is stored. It is no substitute for medical diagnosis or treatment. You need a microphone and speakers.">
-      ⚠️ 3D 체험은 <b>개발 중인 시연 빌드</b>로, 리브리드 팀의 PC에서, 그 PC가 꺼져 있으면 클라우드 GPU에서 실시간으로 스트리밍됩니다.
-      팀 PC로 열리면 같은 시간에 접속한 분들과 같은 장면을 함께 보고, 클라우드로 열리면 이용자가 많을 때 잠시 기다릴 수 있어요.
-      목소리는 글자로 바꾸기 위해 Cloudflare Workers AI로, 대화 내용은 바다의 대답을 만들기 위해
-      AI(Anthropic Claude)로 전송되며 녹음이나 대화는 저장하지 않습니다. 의학적 진단·치료를 대신하지 않습니다. 마이크와 스피커가 필요해요.
+    <!-- 안내 문구: 보관되는 것은 메일로 받기로 한 리포트뿐이고(이름·이메일 없이 무작위 식별번호로 암호화, 1년),
+         그 식별번호는 이용자에게 전달되지 않는다 (chat-worker/src/archive.ts). 바꿀 때 이 사실과 어긋나지 않게. -->
+    <p class="game__disclaimer stage3d__note reveal" id="stage3dNote" data-en="⚠️ This demo is a scaled-down version of the real model. Your voice and the conversation are sent to AI (Cloudflare · Anthropic) only to write Bada&rsquo;s replies and the report, and no recording or conversation is stored. Only if you choose to receive the report by email is that report kept — encrypted under a unique ID, with no name or email address attached — for one year. It is no substitute for medical diagnosis or treatment.">
+      ⚠️ 본 시연은 실제 모델의 최소화 버전입니다.
+      목소리와 대화는 바다의 대답과 리포트를 만드는 데에만 AI(Cloudflare·Anthropic)로 전송되며, 녹음이나 대화는 저장되지 않습니다.
+      리포트를 메일로 받기로 한 경우에만 그 리포트를 이름·이메일 없이 고유 식별번호로 암호화해 1년간 보관합니다.
+      단, 이는 의학적 진단·치료를 대신하지 않습니다.
     </p>
 
     <!-- 2D 체험: 3D를 열 수 없을 때 '2D로 바닷가 걷기'를 누르면 보인다 -->
