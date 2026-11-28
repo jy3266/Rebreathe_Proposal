@@ -44,13 +44,15 @@ html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); 
   background: var(--panel); border-left: 1px solid rgba(0, 0, 0, 0.08);
 }
 .chat__head {
-  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px;
   padding: 14px 16px; border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
-.chat__head h1 { margin: 0; font-size: 18px; color: var(--sea-deep); }
+/* With three chips the head no longer fits one line in the 380px panel: the chips move to a
+   second line instead of squeezing their labels onto two. */
+.chat__head h1 { margin: 0; font-size: 18px; color: var(--sea-deep); white-space: nowrap; }
 .chip {
   border: 1px solid rgba(0, 0, 0, 0.12); background: #fff; border-radius: 999px;
-  padding: 6px 10px; font: inherit; font-size: 13px; cursor: pointer;
+  padding: 6px 10px; font: inherit; font-size: 13px; cursor: pointer; white-space: nowrap;
 }
 .chat__log {
   flex: 1; min-height: 0; overflow-y: auto; padding: 14px 16px;
@@ -113,6 +115,26 @@ html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); 
   text-overflow: ellipsis;
 }
 
+/* ---------- Typing (⌨️) ---------- */
+.type {
+  display: flex; gap: 8px; padding: 10px 16px 0; border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+.type[hidden] { display: none; }
+.type input {
+  flex: 1; min-width: 0; font: inherit; font-size: 15px; padding: 10px 12px; color: var(--ink);
+  border: 1px solid rgba(0, 0, 0, 0.16); border-radius: 12px; background: #fff;
+}
+.type input:focus { outline: 2px solid var(--sea); outline-offset: 1px; border-color: transparent; }
+.type__send {
+  flex: none; border: 0; border-radius: 12px; padding: 0 16px; font: inherit; font-size: 14px;
+  font-weight: 700; background: var(--sea); color: #fff; cursor: pointer;
+}
+.type__send:hover { background: var(--sea-deep); }
+.type__send:disabled { background: #c9d6dd; cursor: default; }
+/* the voice dock sits right under the text box, so one divider is enough */
+.type:not([hidden]) + .voice { border-top: 0; }
+.chip--type[aria-pressed="true"] { background: var(--me); border-color: var(--sea); color: var(--sea-deep); font-weight: 600; }
+
 @keyframes breathe { 50% { transform: scale(0.94); } }
 @keyframes ripple { from { transform: scale(1); opacity: 1; } to { transform: scale(1.6); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) {
@@ -153,7 +175,7 @@ html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); 
 /* "다시 걷기": the email is asked only once per walk */
 .start__form.is-again .start__field, .start__form.is-again .start__consent { display: none; }
 
-.chat__tools { display: flex; gap: 6px; align-items: center; }
+.chat__tools { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .chip--finish { background: #fff3ef; border-color: #f6c1b8; color: #b44a3c; font-weight: 600; }
 .chip--finish:hover { background: #fde6e2; }
 

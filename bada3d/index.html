@@ -20,6 +20,8 @@
         <div class="chat__tools">
           <!-- Ends the walk and makes the caregiver report (Worker /report) -->
           <button id="finish-btn" class="chip chip--finish" type="button" hidden data-en="🏁 Finish">🏁 산책 마치기</button>
+          <!-- Write to Bada instead of talking: opens #type-form and pauses the microphone -->
+          <button id="type-btn" class="chip chip--type" type="button" aria-pressed="false" aria-controls="type-form" data-en="⌨️ Type">⌨️ 키보드</button>
           <button id="voice-btn" class="chip" type="button" aria-pressed="true" data-en="🔊 Voice on">🔊 목소리 켬</button>
         </div>
       </header>
@@ -32,7 +34,15 @@
 
       <div id="chat-log" class="chat__log" aria-live="polite"></div>
 
-      <!-- Voice only: no typing. The button shows what is happening and pauses / resumes listening. -->
+      <!-- Typing (⌨️ in the header). Keys typed here never reach the 3D scene (bada-chat.js). -->
+      <form id="type-form" class="type" hidden>
+        <input id="type-input" type="text" maxlength="500" autocomplete="off" enterkeyhint="send"
+               placeholder="바다에게 하고 싶은 말을 써 보세요" data-en-placeholder="Write to Bada"
+               aria-label="바다에게 보낼 말" data-en-aria-label="Message to Bada">
+        <button id="type-send" class="type__send" type="submit" data-en="Send">보내기</button>
+      </form>
+
+      <!-- Voice first. The button shows what is happening and pauses / resumes listening. -->
       <div class="voice">
         <button id="mic-btn" class="orb" type="button" data-state="off"
                 aria-label="듣기 멈추기 / 다시 듣기" data-en-aria-label="Pause or resume listening">
@@ -52,7 +62,8 @@
     <div id="start-overlay" class="start">
       <div class="start__card">
         <h2 data-en="Walk with Bada">바다와 함께 걷기</h2>
-        <p data-en="Take a walk with Bada and talk about what happened today &lt;b&gt;out loud&lt;/b&gt; — no typing. English or Korean, either is fine.&lt;br&gt;Please turn on your microphone and speakers.">바다와 해변을 걸으며 오늘 있었던 일을 <b>말로</b> 이야기해 보세요. 한국어도, 영어도 좋아요.<br>
+        <p data-en="Take a walk with Bada and talk about what happened today &lt;b&gt;out loud&lt;/b&gt;. English or Korean, either is fine. If talking is hard, you can type with ⌨️ too.&lt;br&gt;Please turn on your microphone and speakers.">바다와 해변을 걸으며 오늘 있었던 일을 <b>말로</b> 이야기해 보세요. 한국어도, 영어도 좋아요.
+           말하기 어려우면 ⌨️ 키보드로 써도 돼요.<br>
            마이크와 스피커를 켜 주세요.</p>
         <!-- Optional caregiver email: after the walk, the "마음 리포트" goes there (bada-chat.js finishWalk) -->
         <form id="start-form" class="start__form" novalidate>

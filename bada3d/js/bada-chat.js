@@ -1,6 +1,8 @@
-// Voice-only conversation with "바다":
+// Voice conversation with "바다":
 //   mic (voice.js detects one utterance) -> Worker /stt (Whisper) -> Worker /chat (Claude)
-//   -> speechSynthesis, then listen again. No typing.
+//   -> speechSynthesis, then listen again.
+// A child who would rather write opens ⌨️: typed lines go straight to /chat, and the microphone
+// stays paused until 🎤 is tapped or ⌨️ is closed.
 // The child may talk in Korean or English whatever the page language: /stt detects which, Claude
 // answers in the child's language, and each spoken sentence gets a Korean or English voice.
 // Each step is mirrored to Unreal through the bridge (Bada turns to the child, bobs while talking).
@@ -48,6 +50,10 @@ const el = {
   reportBody: document.getElementById('report-body'),
   reportClose: document.getElementById('report-close'),
   reportAgain: document.getElementById('report-again'),
+  typeBtn: document.getElementById('type-btn'),
+  typeForm: document.getElementById('type-form'),
+  typeInput: document.getElementById('type-input'),
+  typeSend: document.getElementById('type-send'),
 };
 
 // Static page text: Korean in the HTML, English in data-en / data-en-* attributes.
@@ -55,10 +61,12 @@ if (!KO) {
   document.title = 'Walk with Bada';
   document.querySelectorAll('[data-en]').forEach((n) => { n.innerHTML = n.dataset.en; });
   document.querySelectorAll('[data-en-aria-label]').forEach((n) => n.setAttribute('aria-label', n.dataset.enAriaLabel));
+  document.querySelectorAll('[data-en-placeholder]').forEach((n) => { n.placeholder = n.dataset.enPlaceholder; });
 }
 
 const history = []; // [{ role, content }] sent to the Worker
 let voiceOn = true;
+let typing = false; // ⌨️ is open
 let bridge;
 let mic = null;
 
@@ -162,6 +170,7 @@ const VOICE_TEXT = {
   missed: ['잘 못 들었어요. 한 번 더 말해 줄래요?', "I didn't catch that. Could you say it again?"],
   nomic: ['마이크를 쓸 수 없어요. 마이크를 허용한 뒤 🎤 를 눌러 주세요', 'No microphone. Allow it, then tap 🎤'],
   error: ['연결이 잠깐 끊겼어요. 🎤 를 눌러 다시 말해 주세요', 'Connection hiccup. Tap 🎤 and say it again'],
+  typing: ['글로 써서 보내 보세요 · 🎤 를 누르면 말로도 할 수 있어요', 'Write to Bada · tap 🎤 to talk instead'],
 };
 let state = 'off';
 
@@ -189,6 +198,11 @@ const voices = { ko: null, en: null }; // one voice per language Bada may speak
 let speaking = 0; // utterances queued or playing
 let speechGen = 0; // bumped by stopSpeaking(); callbacks of cancelled utterances are ignored
 let replyStreaming = false;
+// A new line can be sent only once Bada's reply has fully arrived (the history must alternate).
+function setReplyStreaming(on) {
+  replyStreaming = on;
+  if (el.typeSend) el.typeSend.disabled = on;
+}
 let replyId = 0;
 let silencedReply = -1; // the child talked over this reply: show the rest, don't speak it
 
@@ -261,6 +275,11 @@ function stopSpeaking() {
 // Once Bada has finished (reply fully streamed and spoken), it is the child's turn again.
 function afterBadaTurn() {
   if (finished || replyStreaming || speaking > 0) return;
+  if (typing) {
+    // The child is writing: the microphone opens only when 🎤 is tapped.
+    if (!mic?.active) setState('paused', 'typing');
+    return;
+  }
   if (!mic) {
     setState('nomic');
     return;
@@ -330,7 +349,7 @@ async function onUtterance(wav) {
 
 // ---------- Talking to the Worker ----------
 
-async function converse(text) {
+async function converse(text, { typed = false } = {}) {
   addBubble('user', text);
   history.push({ role: 'user', content: text });
 
@@ -340,7 +359,7 @@ async function converse(text) {
   }
 
   setState('thinking');
-  replyStreaming = true;
+  setReplyStreaming(true);
   const id = ++replyId;
   const body = addBubble('assistant', '…');
   let reply = '';
@@ -375,14 +394,15 @@ async function converse(text) {
       'Sorry, I cannot reach Bada right now. Could you try again in a moment?');
     body.textContent = reply;
     history.pop(); // the child can simply say it again
-    replyStreaming = false;
+    if (typed && !el.typeInput.value) el.typeInput.value = text; // or send the same words again
+    setReplyStreaming(false);
     speak(reply, id);
     afterBadaTurn(); // no-op while the apology is being spoken; continues when it ends
     return;
   }
 
   history.push({ role: 'assistant', content: reply.trim() || '…' });
-  replyStreaming = false;
+  setReplyStreaming(false);
   afterBadaTurn(); // continues now if nothing is being spoken, otherwise when speech ends
 }
 
@@ -560,6 +580,81 @@ el.voice.addEventListener('click', () => {
   el.voice.textContent = voiceOn ? T('🔊 목소리 켬', '🔊 Voice on') : T('🔈 목소리 끔', '🔈 Voice off');
   el.voice.setAttribute('aria-pressed', String(voiceOn));
 });
+
+// ---------- Typing (⌨️) ----------
+// For a child who cannot or would rather not talk (a quiet room, no microphone, shyness).
+// While it is open the microphone does not reopen on its own after Bada answers, so it does not
+// pick up the room while the child writes; 🎤 still listens once when tapped.
+
+function setTyping(on) {
+  typing = on;
+  el.typeForm.hidden = !on;
+  el.typeBtn.setAttribute('aria-pressed', String(on));
+  if (on) {
+    if (mic?.active) {
+      mic.pause();
+      bridge?.send({ bada: 'listen_end' });
+    }
+    if (!['transcribing', 'thinking', 'speaking'].includes(state)) setState('paused', 'typing');
+    el.typeInput.focus();
+    return;
+  }
+  returnFocusToScene(el.typeBtn); // back to walking
+  if (!started || finished || walkEnded) return;
+  if (!mic) setState('nomic');
+  else if (!replyStreaming && speaking === 0 && !mic.active) listen(); // back to talking
+}
+
+function sendTyped() {
+  const text = el.typeInput.value.trim();
+  if (!text || !started || finished || walkEnded || replyStreaming) return;
+  el.typeInput.value = '';
+  touch();
+  if (mic?.active) {
+    mic.pause();
+    bridge?.send({ bada: 'listen_end' });
+  }
+  stopSpeaking(); // writing over Bada works like talking over her
+  converse(text, { typed: true });
+}
+
+if (el.typeBtn && el.typeForm && el.typeInput) {
+  el.typeBtn.addEventListener('click', () => setTyping(!typing));
+
+  // Enter sends. With a Korean IME the Enter that commits the last syllable arrives while still
+  // composing; sending then would clear the box before that syllable lands (it would reappear
+  // alone). So wait for the composition to end, and take the value only after that.
+  let sendAfterComposition = false;
+  el.typeInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      returnFocusToScene(el.typeInput); // walk again without closing the box
+      return;
+    }
+    if (e.key !== 'Enter') return;
+    e.preventDefault(); // no implicit form submit: the cases are handled here
+    // Only isComposing: some mobile keyboards report keyCode 229 for every key, even with no
+    // composition (no compositionend would follow), and Safari ends the composition before this.
+    if (e.isComposing) {
+      sendAfterComposition = true;
+      return;
+    }
+    sendTyped();
+  });
+  el.typeInput.addEventListener('compositionend', () => {
+    if (!sendAfterComposition) return;
+    sendAfterComposition = false;
+    setTimeout(sendTyped, 0); // an Enter right after may already have sent it: then the box is empty
+  });
+  el.typeInput.addEventListener('input', touch); // writing is activity (the cloud idle timer)
+  el.typeForm.addEventListener('submit', (e) => {
+    e.preventDefault(); // the Send button
+    sendTyped();
+    el.typeInput.focus();
+  });
+  // Keys typed here are text, not walking: Pixel Streaming reads keys on `document`, and the
+  // window handler below would hand focus back to the scene.
+  ['keydown', 'keyup', 'keypress'].forEach((type) => el.typeForm.addEventListener(type, (e) => e.stopPropagation()));
+}
 
 // Keys belong to the walk. A click leaves focus on the chat control that was clicked, and the
 // browser would then let walking keys operate it: arrows or a letter pick another microphone in

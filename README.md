@@ -19,7 +19,7 @@ assets/
   js/stage3d.js         '바다와 함께 걷기' 3D 체험을 어디서 띄울지 고른다 (시연 PC / 클라우드 / 2D)
   js/game.js            '바다와 함께 걷기' 2D 상담 데모 (3D를 열 수 없을 때 대신 보임)
   img/                  사진 · 스크린샷
-bada3d/                 3D 체험 페이지 (언리얼 화면 + 목소리로만 하는 바다와의 대화)
+bada3d/                 3D 체험 페이지 (언리얼 화면 + 목소리로, 원하면 ⌨️ 키보드로 하는 바다와의 대화)
   js/config.js          스트림 종류·주소 설정 (공개 페이지라 허용된 주소만 받음)
   js/ue-bridge.js       언리얼 연결 — 시연 PC(Epic 프런트엔드) / Eagle 3D Streaming(iframe)
   js/voice.js           마이크 · 말 끝 자동 감지 → WAV, 소리가 안 들어오는(가상) 마이크 감지
