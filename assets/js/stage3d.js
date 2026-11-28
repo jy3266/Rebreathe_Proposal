@@ -18,7 +18,7 @@
   var DEMO_PAGE = 'bada3d/';
   /* Eagle 3D Streaming 링크 (Control Panel → 앱 → Configuration → iframe 의 src).
      비워 두면 클라우드를 쓰지 않는다. */
-  var CLOUD_STREAM = 'https://connector.eagle3dstreaming.com/v5/Junoh/Rebreathe_PixelStreaming_Win64/default';
+  var CLOUD_STREAM = 'https://connector.eagle3dstreaming.com/v5/Junoh/Rebreathe_PixelStreaming_Win64_v2/default';
 
   function byId(id) { return document.getElementById(id); }
   var root = byId('stage3d');
