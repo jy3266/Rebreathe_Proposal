@@ -253,3 +253,221 @@ html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); 
   .app { grid-template-columns: 1fr; grid-template-rows: 45vh 1fr; }
   .chat { border-left: 0; border-top: 1px solid rgba(0, 0, 0, 0.08); }
 }
+
+/* ==========================================================
+   Kids theme: big, round, bright and bouncy. The caregiver report above keeps its calm look.
+   ========================================================== */
+:root {
+  --sea: #2b9be6;
+  --sea-deep: #1c6fb0;
+  --sand: #fff1d6;
+  --me: #dff3ff;
+  --panel: #fffdf7;
+  --ink: #233a4a;
+  --friend: #5aa9e6; /* the chosen friend's colour (bada-chat.js applyFriend) */
+  --pop-shadow: 0 4px 0 rgba(35, 58, 74, 0.16);
+}
+.chat__head h1 { font-size: 19px; font-weight: 800; color: var(--sea-deep); }
+.chip {
+  padding: 8px 12px; font-size: 14px; font-weight: 700; border-width: 2px; border-color: #e3ebf0;
+  box-shadow: var(--pop-shadow); transition: transform 0.12s;
+}
+.chip:active { transform: translateY(2px); box-shadow: none; }
+.bubble { font-size: 15.5px; padding: 10px 14px; border-radius: 20px; }
+.bubble__who { font-weight: 700; }
+.bubble--assistant {
+  background: #fff6e8; background: color-mix(in srgb, var(--friend) 16%, white);
+  border: 2px solid #f3e2cc; border-color: color-mix(in srgb, var(--friend) 30%, white);
+}
+.bubble--user { background: var(--me); border: 2px solid #c6e6fb; }
+.bubble--game {
+  align-self: center; max-width: 94%; text-align: center; background: #fffbe6;
+  border: 2px dashed #f2cf4a; font-size: 14.5px;
+}
+.voice__status { font-size: 15px; font-weight: 600; }
+.chat__hint { font-size: 13px; font-weight: 600; }
+.orb { width: 72px; height: 72px; font-size: 30px; box-shadow: 0 5px 0 rgba(28, 111, 176, 0.25); }
+.orb[data-state="listening"], .orb[data-state="hearing"] { background: linear-gradient(#4fb6ff, #2b8fe0); }
+.type input, .type__send { border-radius: 16px; }
+.type__send { box-shadow: 0 4px 0 var(--sea-deep); }
+
+/* ---------- Start card ---------- */
+.start__card { border-radius: 28px; padding: 26px 22px 22px; box-shadow: 0 10px 0 rgba(0, 0, 0, 0.12), 0 24px 60px rgba(0, 0, 0, 0.35); }
+.start__card h2 { font-size: 26px; font-weight: 800; }
+.start__lead { font-size: 15.5px; }
+.start__pick { margin: 0 0 10px !important; font-size: 18px; font-weight: 800; color: var(--sea-deep) !important; }
+.friends { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 0 0 18px; }
+.friend {
+  position: relative; display: grid; justify-items: center; align-content: start; gap: 4px;
+  padding: 12px 6px 10px; border: 3px solid #e6edf2; border-radius: 22px; background: #fff;
+  font: inherit; color: var(--ink); cursor: pointer; box-shadow: 0 5px 0 #e6edf2;
+  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+.friend:hover { transform: translateY(-2px); }
+.friend:focus-visible { outline: 3px solid var(--sea); outline-offset: 2px; }
+.friend__emoji {
+  display: grid; place-items: center; width: 66px; height: 66px; border-radius: 50%; font-size: 42px;
+  background: #fff6e8; background: color-mix(in srgb, var(--friend) 24%, white);
+}
+.friend__name { font-size: 17px; font-weight: 800; }
+.friend__about { font-size: 11.5px; line-height: 1.35; color: var(--muted); }
+.friend[aria-pressed="true"] { border-color: var(--friend); box-shadow: 0 5px 0 var(--friend); transform: translateY(-4px); }
+.friend[aria-pressed="true"] .friend__emoji { animation: hop 0.9s ease-in-out infinite; }
+.friend[aria-pressed="true"]::after {
+  content: "\2713"; position: absolute; top: -9px; right: -7px; width: 28px; height: 28px;
+  display: grid; place-items: center; border-radius: 50%; background: var(--friend); color: #fff;
+  font-weight: 900; font-size: 16px; box-shadow: var(--pop-shadow);
+}
+.start__btn {
+  padding: 15px 34px; font-size: 18px; font-weight: 800; border-radius: 999px;
+  background: linear-gradient(#ffbf4d, #ff8a3d); box-shadow: 0 6px 0 #d8661c; transition: transform 0.1s;
+}
+.start__btn:hover { background: linear-gradient(#ffc964, #ff9650); }
+.start__btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #d8661c; }
+
+/* ---------- Walk game HUD over the scene (game-hud.js) ---------- */
+.hud { position: absolute; inset: 0; z-index: 6; pointer-events: none; font-weight: 800; color: var(--ink); }
+.hud[hidden] { display: none; }
+.hud__friend {
+  position: absolute; left: 12px; top: 12px; display: flex; align-items: center; gap: 7px;
+  padding: 5px 14px 5px 5px; border-radius: 999px; background: #fff; border: 3px solid var(--friend);
+  box-shadow: var(--pop-shadow); font-size: 16px;
+}
+.hud__friend-emoji {
+  display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; font-size: 25px;
+  background: #fff6e8; background: color-mix(in srgb, var(--friend) 25%, white);
+}
+.hud__center { position: absolute; left: 50%; top: 10px; transform: translateX(-50%); display: grid; justify-items: center; gap: 6px; }
+.hud__score {
+  display: flex; align-items: baseline; gap: 6px; padding: 5px 20px 7px; border-radius: 999px;
+  background: linear-gradient(#fff27a, #ffc928); border: 4px solid #fff; color: #7a4a00;
+  box-shadow: 0 5px 0 #d99a00, 0 10px 22px rgba(0, 0, 0, 0.25);
+}
+.hud__score-icon { font-size: 24px; align-self: center; }
+.hud__score-num { font-size: 32px; line-height: 1; min-width: 1.1em; text-align: center; }
+.hud__score-unit { font-size: 15px; }
+.hud__found { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; max-width: 60vw; }
+.hud__chip { padding: 2px 9px; border-radius: 999px; background: rgba(255, 255, 255, 0.92); font-size: 14px; box-shadow: var(--pop-shadow); }
+.hud__poop {
+  position: absolute; right: 12px; top: 12px; width: 156px; padding: 7px 11px 9px;
+  border-radius: 18px; background: #fff; border: 3px solid #e7d3bd; box-shadow: var(--pop-shadow);
+}
+.hud__poop-label { font-size: 13.5px; color: #7a4a1f; }
+.hud__poop-bar { height: 16px; margin-top: 5px; border-radius: 999px; background: #f6ebdf; border: 2px solid #e7d3bd; overflow: hidden; }
+.hud__poop-fill { width: 0; height: 100%; border-radius: 999px; background: linear-gradient(90deg, #d9a066, #8b5a2b); transition: width 0.6s ease; }
+.hud__poop.is-high .hud__poop-fill { background: linear-gradient(90deg, #ffb347, #c0612b); }
+.hud__poop.is-urge { border-color: #ff5a5a; animation: wiggle 0.45s ease-in-out infinite; }
+.hud__poop-timer { display: block; margin-top: 4px; text-align: center; font-size: 20px; color: #e23b3b; }
+.hud__poop-timer[hidden] { display: none; }
+.hud__pops { position: absolute; left: 50%; top: 104px; width: 0; }
+.hud__pop {
+  position: absolute; left: 0; transform: translateX(-50%); white-space: nowrap; font-size: 24px; color: #fff;
+  text-shadow: 0 3px 0 #e0661c, 0 0 10px rgba(0, 0, 0, 0.45); animation: pop-up 1.6s ease-out forwards;
+}
+.hud__pop--big { font-size: 34px; text-shadow: 0 3px 0 #b8860b, 0 0 14px rgba(0, 0, 0, 0.5); }
+.hud__bubble {
+  position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%); width: max-content; max-width: min(92%, 470px);
+  padding: 11px 18px; border-radius: 24px; background: #fff; border: 3px solid var(--friend);
+  font-size: 17px; line-height: 1.45; text-align: center; box-shadow: 0 6px 0 rgba(0, 0, 0, 0.14);
+}
+.hud__bubble[hidden] { display: none; }
+.is-bounce { animation: bounce 0.45s ease; }
+.hud__bubble.is-bounce { animation-name: bounce-x; }
+
+/* ---------- Touch controls (touch-controls.js) ---------- */
+.touch { position: absolute; inset: 0; z-index: 5; touch-action: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+.touch[hidden] { display: none; }
+.touch__stick {
+  position: absolute; width: 116px; height: 116px; margin: -58px 0 0 -58px; border-radius: 50%;
+  background: rgba(255, 255, 255, 0.22); border: 3px solid rgba(255, 255, 255, 0.75); pointer-events: none;
+}
+.touch__stick[hidden] { display: none; }
+.touch__knob {
+  position: absolute; left: 50%; top: 50%; width: 54px; height: 54px; margin: -27px 0 0 -27px; border-radius: 50%;
+  background: #fff; box-shadow: 0 4px 0 rgba(0, 0, 0, 0.22);
+}
+.touch__hint {
+  position: absolute; left: 0; right: 0; bottom: 74px; display: flex; justify-content: space-between; gap: 8px;
+  padding: 0 12px; pointer-events: none; transition: opacity 0.6s;
+}
+.touch__hint span { padding: 7px 12px; border-radius: 999px; background: rgba(20, 40, 60, 0.55); color: #fff; font-size: 14px; font-weight: 800; }
+.touch__hint.is-gone { opacity: 0; }
+
+@keyframes hop { 50% { transform: translateY(-6px) rotate(-4deg); } }
+@keyframes wiggle { 25% { transform: rotate(-4deg); } 75% { transform: rotate(4deg); } }
+@keyframes bounce { 40% { transform: scale(1.18); } 70% { transform: scale(0.95); } }
+@keyframes bounce-x { 0%, 100% { transform: translateX(-50%) scale(1); } 40% { transform: translateX(-50%) scale(1.15); } 70% { transform: translateX(-50%) scale(0.96); } }
+@keyframes pop-up {
+  0% { opacity: 0; transform: translate(-50%, 10px) scale(0.6); }
+  15% { opacity: 1; transform: translate(-50%, 0) scale(1.15); }
+  70% { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, -60px) scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .friend, .hud__poop, .is-bounce, .hud__pop, .friend__emoji { animation: none !important; }
+}
+
+/* Phones: the scene is the top 45% of the screen, so the HUD gets smaller. */
+@media (max-width: 860px) {
+  .hud__friend { left: 8px; top: 8px; font-size: 13px; padding-right: 10px; }
+  .hud__friend-emoji { width: 30px; height: 30px; font-size: 20px; }
+  .hud__center { top: 6px; }
+  .hud__score { padding: 3px 14px 5px; }
+  .hud__score-num { font-size: 24px; }
+  .hud__score-icon { font-size: 18px; }
+  .hud__found { max-width: 46vw; }
+  .hud__chip { font-size: 12px; }
+  .hud__poop { right: 8px; top: 8px; width: 112px; padding: 5px 8px 7px; }
+  .hud__poop-label { font-size: 11.5px; }
+  .hud__poop-timer { font-size: 16px; }
+  .hud__pops { top: 74px; }
+  .hud__bubble { font-size: 14.5px; bottom: 10px; padding: 8px 14px; }
+  .touch__hint { bottom: 58px; }
+  .touch__hint span { font-size: 12px; }
+  .friend__about { display: none; }
+  .friend__emoji { width: 56px; height: 56px; font-size: 36px; }
+}
+@media (max-width: 420px) {
+  .hud__friend-name { display: none; }
+  .hud__friend { padding-right: 5px; }
+}
+
+/* ---------- Opening film + REBREATHE card (intro.js) ---------- */
+.intro {
+  position: fixed; inset: 0; z-index: 40; display: grid; place-items: center;
+  background: #0b1b26; transition: opacity 0.6s ease;
+}
+.intro[hidden] { display: none; }
+.intro::before { content: ""; position: absolute; inset: 0; z-index: 1; background: rgba(8, 24, 36, 0.28); }
+.intro.is-playing::before { display: none; }
+.intro__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.intro__play {
+  position: relative; z-index: 2; display: grid; justify-items: center; gap: 12px;
+  border: 0; background: none; color: #fff; font: inherit; font-size: 20px; font-weight: 800;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.55); cursor: pointer;
+}
+.intro__play[hidden] { display: none; }
+.intro__play b {
+  display: grid; place-items: center; width: 96px; height: 96px; padding-left: 6px; border-radius: 50%;
+  font-size: 40px; background: linear-gradient(#ffbf4d, #ff8a3d);
+  box-shadow: 0 6px 0 #d8661c, 0 14px 32px rgba(0, 0, 0, 0.35); animation: hop 1.3s ease-in-out infinite;
+}
+.intro__skip {
+  position: absolute; right: 16px; bottom: 16px; z-index: 2; padding: 10px 16px; border: 0; border-radius: 999px;
+  background: rgba(255, 255, 255, 0.88); color: var(--ink); font: inherit; font-size: 14px; font-weight: 800;
+  box-shadow: var(--pop-shadow); cursor: pointer;
+}
+.intro__skip[hidden] { display: none; }
+.intro__brand {
+  position: absolute; inset: 0; z-index: 3; display: grid; place-content: center; justify-items: center; gap: 6px;
+  background: radial-gradient(circle at 50% 42%, #ffffff, #e6f3fc); animation: brand-in 0.7s ease both;
+}
+.intro__brand[hidden] { display: none; }
+.intro__brand img { width: 120px; height: 120px; animation: brand-pop 0.9s 0.15s ease both; }
+.intro__brand strong { font-size: 34px; letter-spacing: 0.2em; color: #1d5f8f; }
+.intro__brand span { font-size: 13px; letter-spacing: 0.35em; text-transform: uppercase; color: #6b8ba3; }
+.intro__brand em { margin-top: 12px; font-style: normal; font-size: 22px; font-weight: 800; color: var(--sea); }
+.intro.is-out { opacity: 0; }
+@keyframes brand-in { from { opacity: 0; } }
+@keyframes brand-pop { from { opacity: 0; transform: scale(0.7); } 60% { transform: scale(1.06); } }
+@media (prefers-reduced-motion: reduce) { .intro__play b, .intro__brand, .intro__brand img { animation: none; } }

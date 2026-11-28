@@ -1,6 +1,10 @@
-// Voice conversation with "바다":
+// Voice conversation with the walking friend (the child picks 🐻 포근이, 🐱 살랑이 or 🦉 호호 on the
+// start card; friends.js), on top of the 3D walk with its little game (game-hud.js):
 //   mic (voice.js detects one utterance) -> Worker /stt (Whisper) -> Worker /chat (Claude)
-//   -> speechSynthesis, then listen again.
+//   -> the friend's voice (speech-out.js: Worker /tts, else speechSynthesis), then listen again.
+// Unreal (RBBadaBridge) walks the chosen friend along, scatters items to pick up, keeps the score
+// and runs the poop game; its events arrive through the bridge and are shown in the HUD.
+// On phones and tablets the scene gets touch controls (touch-controls.js).
 // A child who would rather write opens ⌨️: typed lines go straight to /chat, and the microphone
 // stays paused until 🎤 is tapped or ⌨️ is closed.
 // The child may talk in Korean or English whatever the page language: /stt detects which, Claude
@@ -11,14 +15,26 @@ import { CONFIG } from './config.js';
 import { createBridge } from './ue-bridge.js';
 import { createMic } from './voice.js';
 import { renderReport } from './report-view.js';
+import { FRIENDS, FRIEND_IDS, ITEMS, GAME_LINES } from './friends.js';
+import { unlockAudio } from './audio.js';
+import { createSpeechOut } from './speech-out.js';
+import { createHud } from './game-hud.js';
+import { createTouchControls, prefersTouch } from './touch-controls.js';
+import { runIntro } from './intro.js';
 
 const KO = CONFIG.lang === 'ko';
 const T = (ko, en) => (KO ? ko : en);
 
-const OPENING = T(
-  '안녕! 나는 바다야. 오늘 파도 소리가 참 좋다. 있잖아, 오늘 너한테는 어떤 일이 있었어?',
-  'Hi! I am Bada. The waves sound lovely today. So tell me, how was your day?'
-);
+// The friend chosen on the start card (remembered for the next visit).
+let friendId = (() => {
+  try {
+    const saved = localStorage.getItem('bada.friend');
+    return FRIEND_IDS.includes(saved) ? saved : 'bear';
+  } catch { return 'bear'; }
+})();
+const friend = () => FRIENDS[friendId];
+const friendName = () => friend().name[CONFIG.lang];
+const opening = () => friend().opening[CONFIG.lang];
 
 // Same risk words as the 2D demo (game.js). Used only to show the caregiver notice on screen;
 // Bada's spoken reply is handled by Claude's own safety instructions.
@@ -54,6 +70,7 @@ const el = {
   typeForm: document.getElementById('type-form'),
   typeInput: document.getElementById('type-input'),
   typeSend: document.getElementById('type-send'),
+  hint: document.querySelector('.chat__hint'),
 };
 
 // Static page text: Korean in the HTML, English in data-en / data-en-* attributes.
@@ -77,7 +94,7 @@ function addBubble(role, text) {
   div.className = `bubble bubble--${role}`;
   const who = document.createElement('span');
   who.className = 'bubble__who';
-  who.textContent = role === 'user' ? T('나', 'Me') : T('바다', 'Bada');
+  who.textContent = role === 'user' ? T('나', 'Me') : role === 'system' ? '' : `${friend().emoji} ${friendName()}`;
   const body = document.createElement('p');
   body.textContent = text;
   div.append(who, body);
@@ -110,6 +127,8 @@ function setStatus(s, extra) {
   const t = STATUS_TEXT[s];
   el.status.textContent = typeof t === 'function' ? t(extra) : (t ?? s);
   el.status.hidden = !el.status.textContent;
+  if (s === 'playing') streamPlaying = true;
+  if (s === 'disconnected' || s === 'failed') stopGame();
 }
 
 // ---------- Ending a cloud walk ----------
@@ -127,6 +146,7 @@ function endWalk(reason) {
   walkEnded = true;
   mic?.pause();
   stopSpeaking();
+  stopGame();
   bridge?.stop?.();
   el.status.hidden = true;
   const card = el.startOverlay.querySelector('.start__card');
@@ -162,24 +182,32 @@ const VOICE_TEXT = {
   off: ['', ''],
   starting: ['마이크를 켜는 중…', 'Turning on the microphone…'],
   listening: ['듣고 있어요. 편하게 말해 보세요', "I'm listening — go ahead and talk"],
-  hearing: ['듣는 중… 말을 마치면 바다가 대답해요', 'Listening… Bada answers when you finish'],
+  hearing: ['듣는 중… 말을 마치면 {name}(이)가 대답해요', 'Listening… {name} answers when you finish'],
   transcribing: ['무슨 말인지 알아듣는 중…', 'Catching your words…'],
-  thinking: ['바다가 생각하고 있어요…', 'Bada is thinking…'],
-  speaking: ['바다가 말하고 있어요 · 🎤 를 누르면 바로 말할 수 있어요', 'Bada is talking · tap 🎤 to talk right away'],
+  thinking: ['{name}(이)가 생각하고 있어요…', '{name} is thinking…'],
+  speaking: ['{name}(이)가 말하고 있어요 · 🎤 를 누르면 바로 말할 수 있어요', '{name} is talking · tap 🎤 to talk right away'],
   paused: ['잠시 쉬는 중 · 🎤 를 누르면 다시 들어요', 'Paused · tap 🎤 to listen again'],
   missed: ['잘 못 들었어요. 한 번 더 말해 줄래요?', "I didn't catch that. Could you say it again?"],
   nomic: ['마이크를 쓸 수 없어요. 허용한 뒤 🎤 를 누르거나 ⌨️ 로 써 주세요', 'No microphone. Allow it and tap 🎤, or write with ⌨️'],
   error: ['연결이 잠깐 끊겼어요. 🎤 를 눌러 다시 말해 주세요', 'Connection hiccup. Tap 🎤 and say it again'],
-  typing: ['글로 써서 보내 보세요 · 🎤 를 누르면 말로도 할 수 있어요', 'Write to Bada · tap 🎤 to talk instead'],
+  typing: ['글로 써서 보내 보세요 · 🎤 를 누르면 말로도 할 수 있어요', 'Write to {name} · tap 🎤 to talk instead'],
 };
 let state = 'off';
+
+// '{name}(이)가' -> '포근이가' / '호호가': Korean picks 이가 or 가 by the last syllable.
+function withName(text) {
+  const name = friendName();
+  const last = name.charCodeAt(name.length - 1);
+  const batchim = last >= 0xac00 && last <= 0xd7a3 && (last - 0xac00) % 28 !== 0;
+  return text.replaceAll('{name}(이)가', name + (batchim ? '이가' : '가')).replaceAll('{name}', name);
+}
 
 function setState(s, textKey = s) {
   state = s;
   el.mic.dataset.state = s;
   el.mic.setAttribute('aria-pressed', String(s === 'listening' || s === 'hearing'));
   const t = VOICE_TEXT[textKey] || VOICE_TEXT.off;
-  el.voiceStatus.textContent = T(t[0], t[1]);
+  el.voiceStatus.textContent = withName(T(t[0], t[1]));
 }
 
 let levelFrame = 0;
@@ -193,12 +221,8 @@ function setLevel(level) {
 
 // ---------- Speech out ----------
 
-const synth = window.speechSynthesis;
-const voices = { ko: null, en: null }; // one voice per language Bada may speak
-let speaking = 0; // utterances queued or playing
-let speechGen = 0; // bumped by stopSpeaking(); callbacks of cancelled utterances are ignored
 let replyStreaming = false;
-// A new line can be sent only once Bada's reply has fully arrived (the history must alternate).
+// A new line can be sent only once the friend's reply has fully arrived (the history must alternate).
 function setReplyStreaming(on) {
   replyStreaming = on;
   if (el.typeSend) el.typeSend.disabled = on;
@@ -206,24 +230,19 @@ function setReplyStreaming(on) {
 let replyId = 0;
 let silencedReply = -1; // the child talked over this reply: show the rest, don't speak it
 
-// Prefer the natural-sounding online voices Chrome/Edge provide, in the main region
-// (ko-KR, en-US), then any voice of that region, then any voice of the language.
-function bestVoice(list, region) {
-  const natural = (v) => /Natural|Online|Google/i.test(v.name);
-  const inRegion = (v) => v.lang.replace('_', '-').toLowerCase() === region;
-  return list.find((v) => natural(v) && inRegion(v)) || list.find(inRegion) ||
-    list.find(natural) || list[0] || null;
-}
-function pickVoices() {
-  if (!synth) return;
-  const all = synth.getVoices();
-  voices.ko = bestVoice(all.filter((v) => v.lang.toLowerCase().startsWith('ko')), 'ko-kr');
-  voices.en = bestVoice(all.filter((v) => v.lang.toLowerCase().startsWith('en')), 'en-us');
-}
-if (synth) {
-  pickVoices();
-  synth.addEventListener?.('voiceschanged', pickVoices);
-}
+const speech = createSpeechOut({
+  worker: CONFIG.worker,
+  pageLang: CONFIG.lang,
+  onStart(sentence) {
+    touch();
+    bridge?.send({ bada: 'speak_start', text: sentence });
+    if (['off', 'starting', 'transcribing', 'thinking'].includes(state)) setState('speaking');
+  },
+  onIdle() {
+    bridge?.send({ bada: 'speak_end' });
+    afterBadaTurn();
+  },
+});
 
 // Which voice reads a sentence: Korean if it has Hangul, English if it has Latin letters.
 function languageOf(text) {
@@ -233,48 +252,18 @@ function languageOf(text) {
 }
 
 function speak(sentence, forReply = replyId) {
-  if (!voiceOn || !synth || !sentence.trim() || forReply === silencedReply) return;
-  const lang = languageOf(sentence);
-  const u = new SpeechSynthesisUtterance(sentence);
-  u.lang = lang === 'ko' ? 'ko-KR' : 'en-US';
-  if (voices[lang]) u.voice = voices[lang];
-  u.rate = 1.0;
-  u.pitch = 1.1;
-  const gen = speechGen;
-  let done = false;
-  const finish = () => {
-    if (done) return;
-    done = true;
-    clearTimeout(watchdog);
-    if (gen !== speechGen) return; // cancelled by stopSpeaking()
-    speaking = Math.max(0, speaking - 1);
-    if (speaking === 0) {
-      bridge?.send({ bada: 'speak_end' });
-      afterBadaTurn();
-    }
-  };
-  // Some browsers occasionally never fire `end`; don't let that freeze the conversation.
-  const watchdog = setTimeout(finish, 4000 + sentence.length * (lang === 'ko' ? 320 : 130));
-  u.onstart = () => {
-    touch();
-    bridge?.send({ bada: 'speak_start', text: sentence });
-  };
-  u.onend = u.onerror = finish;
-  speaking++;
-  if (['off', 'starting', 'transcribing', 'thinking'].includes(state)) setState('speaking');
-  synth.speak(u);
+  if (!voiceOn || !sentence.trim() || forReply === silencedReply) return;
+  speech.speak(sentence, { lang: languageOf(sentence), reply: forReply, friend: friendId });
 }
 
 function stopSpeaking() {
-  speechGen++;
-  if (synth) synth.cancel();
-  if (speaking) bridge?.send({ bada: 'speak_end' });
-  speaking = 0;
+  if (speech.busy) bridge?.send({ bada: 'speak_end' });
+  speech.stop();
 }
 
 // Once Bada has finished (reply fully streamed and spoken), it is the child's turn again.
 function afterBadaTurn() {
-  if (finished || replyStreaming || speaking > 0) return;
+  if (finished || replyStreaming || speech.busy) return;
   if (typing) {
     // The child is writing: the microphone opens only when 🎤 is tapped.
     if (!mic?.active) setState('paused', 'typing');
@@ -286,7 +275,7 @@ function afterBadaTurn() {
   }
   if (state === 'paused' || mic.active) return;
   setTimeout(() => {
-    if (!replyStreaming && speaking === 0 && state !== 'paused' && !mic.active) listen();
+    if (!replyStreaming && !speech.busy && state !== 'paused' && !mic.active) listen();
   }, 350); // a short breath so the tail of Bada's voice is not recorded
 }
 
@@ -369,7 +358,7 @@ async function converse(text, { typed = false } = {}) {
     const res = await fetch(`${CONFIG.worker}/chat`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages: history }),
+      body: JSON.stringify({ messages: history, character: friendId, notes: gameNotes() }),
     });
     if (!res.ok || !res.body) throw new Error(`HTTP ${res.status}`);
 
@@ -573,7 +562,7 @@ el.mic.addEventListener('click', async () => {
 
 el.voice.addEventListener('click', () => {
   voiceOn = !voiceOn;
-  if (!voiceOn && speaking) {
+  if (!voiceOn && speech.busy) {
     stopSpeaking();
     afterBadaTurn();
   }
@@ -602,7 +591,7 @@ function setTyping(on) {
   returnFocusToScene(el.typeBtn); // back to walking
   if (!started || finished || walkEnded) return;
   if (!mic) setState('nomic');
-  else if (!replyStreaming && speaking === 0 && !mic.active) listen(); // back to talking
+  else if (!replyStreaming && !speech.busy && !mic.active) listen(); // back to talking
 }
 
 function sendTyped() {
@@ -682,6 +671,182 @@ window.addEventListener('keydown', (e) => {
   if (SCROLL_KEYS.has(e.key) && !e.target.closest?.('input, textarea, select, button')) e.preventDefault();
 });
 
+// ---------- The friend and the walk game ----------
+// On the start card the child picks a friend (big emoji cards). When the walk starts, the page
+// says hello to Unreal (repeating until it answers, since a cloud build may still be loading);
+// a build that knows the game answers "ready" with "touch,game", walks the chosen friend along and
+// then reports items found, the score and the poop game. Older builds never answer that way, and
+// then the page simply has no HUD or touch controls.
+
+const SESSION = crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+const hud = createHud({ stage: el.stage, lang: CONFIG.lang });
+const touchPad = createTouchControls({
+  stage: el.stage,
+  lang: CONFIG.lang,
+  send: (msg) => bridge?.send(msg),
+  onUse: touch, // walking counts as activity for the cloud idle timer
+});
+let ueReady = false;
+let helloTimer = 0;
+let streamPlaying = false;
+const game = { score: 0, found: 0, lastItem: '', events: [] };
+
+function renderFriendPicker() {
+  const box = document.getElementById('friend-pick');
+  if (!box) return;
+  box.replaceChildren(...FRIEND_IDS.map((id) => {
+    const f = FRIENDS[id];
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'friend';
+    b.style.setProperty('--friend', f.color);
+    b.setAttribute('aria-pressed', String(id === friendId));
+    b.innerHTML = `<span class="friend__emoji" aria-hidden="true">${f.emoji}</span>` +
+      `<span class="friend__name">${f.name[CONFIG.lang]}</span>` +
+      `<span class="friend__about">${f.about[CONFIG.lang]}</span>`;
+    b.addEventListener('click', () => {
+      friendId = id;
+      try { localStorage.setItem('bada.friend', id); } catch { /* private mode */ }
+      renderFriendPicker();
+      applyFriend();
+    });
+    return b;
+  }));
+}
+
+// The chosen friend everywhere on the page (HUD, status texts; Unreal on the next hello).
+function applyFriend() {
+  hud.setFriend(friend());
+  document.documentElement.style.setProperty('--friend', friend().color);
+  if (ueReady) bridge?.send({ bada: 'character', value: friendId });
+  if (state !== 'off') setState(state);
+}
+
+function startGame() {
+  if (helloTimer || ueReady) return;
+  let tries = 0;
+  const hello = () => {
+    if (ueReady || walkEnded || ++tries > 160) { // a cloud start can take a couple of minutes
+      clearInterval(helloTimer);
+      helloTimer = 0;
+      return;
+    }
+    // The cloud player drops messages until the build listens; the studio stream until it plays.
+    if (streamPlaying || CONFIG.stream === 'e3ds') bridge?.send({ bada: 'hello', session: SESSION, character: friendId });
+  };
+  hello();
+  helloTimer = setInterval(hello, 1500);
+}
+
+function stopGame() {
+  clearInterval(helloTimer);
+  helloTimer = 0;
+  touchPad.disable();
+  hud.hide();
+}
+
+// What just happened in the game, for the friend's replies (Worker /chat `notes`).
+function gameNotes() {
+  if (!ueReady) return [];
+  const notes = [];
+  if (game.found) {
+    notes.push(`아이가 지금까지 아이템 ${game.found}개를 주워서 점수가 ${game.score}점이야. 방금 주운 건 ${game.lastItem}.`);
+  }
+  return notes.concat(game.events.slice(-4));
+}
+function noteEvent(text) {
+  game.events.push(text);
+  if (game.events.length > 8) game.events.shift();
+}
+
+// The friend says something about the game: always in the bubble over the scene and the chat log;
+// aloud only when that does not cut into the conversation (nobody is talking or thinking).
+function announce(line) {
+  const text = line[CONFIG.lang];
+  hud.say(`${friend().emoji} ${text}`);
+  addBubble('game', text);
+  if (!voiceOn || finished || walkEnded || replyStreaming || speech.busy) return;
+  if (state !== 'listening') return; // talking, thinking, typing or paused: just the bubble
+  mic?.pause();
+  bridge?.send({ bada: 'listen_end' });
+  setState('speaking');
+  speak(text, -2); // when it ends, afterBadaTurn() listens again
+}
+
+// Unreal's responses. The cloud player may deliver the same response twice, so an identical
+// message within a second is ignored (every real game event carries a new score or value).
+let lastRaw = '';
+let lastRawAt = 0;
+function onUnrealMessage(raw) {
+  let msg = raw;
+  if (typeof msg === 'string') {
+    try { msg = JSON.parse(msg); } catch { return; }
+  }
+  if (!msg || typeof msg !== 'object' || typeof msg.bada !== 'string') return;
+  const key = JSON.stringify(msg);
+  if (key === lastRaw && Date.now() - lastRawAt < 1000) return;
+  lastRaw = key;
+  lastRawAt = Date.now();
+  console.debug('[from UE]', key);
+
+  switch (msg.bada) {
+    case 'ready': {
+      const caps = String(msg.value || '').split(',');
+      if (!caps.includes('game') || ueReady) return;
+      ueReady = true;
+      clearInterval(helloTimer);
+      helloTimer = 0;
+      hud.setFriend(friend());
+      hud.setScore(Number(msg.score) || 0);
+      hud.show();
+      if (caps.includes('touch') && prefersTouch()) {
+        touchPad.enable();
+        if (el.hint) el.hint.textContent = T('왼쪽을 밀면 걷고, 오른쪽을 밀면 둘러봐요 · 반짝이는 선물을 주워 봐요!', 'Slide left to walk, slide right to look · pick up the shiny treats!');
+      } else if (el.hint) {
+        el.hint.textContent = T('방향키로 걷고 마우스로 둘러봐요 · 반짝이는 선물을 주워 봐요!', 'Walk with the arrow keys, look with the mouse · pick up the shiny treats!');
+      }
+      break;
+    }
+    case 'item': {
+      const kind = String(msg.value || '');
+      const points = Number(msg.points) || 0;
+      game.score = Number(msg.score) || 0;
+      if (kind !== 'toilet') {
+        game.found++;
+        game.lastItem = ITEMS[kind]?.ko || kind;
+      }
+      hud.item(kind, points, game.score);
+      if (kind === 'poop' || kind === 'golden_poop') noteEvent(`아이가 친구(너)의 ${kind === 'golden_poop' ? '황금똥' : '똥'}을 치워 줬어.`);
+      touch();
+      break;
+    }
+    case 'poop_meter':
+      hud.setMeter(msg.value);
+      break;
+    case 'poop_urge':
+      hud.urge(msg.value);
+      noteEvent('친구(너)가 똥이 마려워서 아이와 함께 화장실을 찾기 시작했어.');
+      announce(msg.toilet === false ? GAME_LINES.urgeNoToilet : GAME_LINES.urge);
+      break;
+    case 'poop_done': {
+      const how = String(msg.value || 'ground');
+      game.score = Number(msg.score) || game.score;
+      hud.poopDone(how, game.score);
+      noteEvent(how === 'toilet'
+        ? '아이와 같이 화장실에 제때 도착해서 친구(너)가 시원하게 볼일을 봤어.'
+        : `친구(너)가 화장실까지 못 참고 길에 ${how === 'golden' ? '황금똥' : '똥'}을 싸 버렸어. 조금 부끄러워.`);
+      announce(how === 'toilet' ? GAME_LINES.toilet : how === 'golden' ? GAME_LINES.golden : GAME_LINES.ground);
+      break;
+    }
+    default:
+      break;
+  }
+}
+
+renderFriendPicker();
+applyFriend();
+runIntro({ lang: CONFIG.lang, onTap: unlockAudio });
+
 // ---------- Caregiver report ----------
 // The optional email given at the start receives the "마음 리포트" (Worker /report) when the walk
 // ends: by "산책 마치기", after a quiet spell in the cloud, or — if the page is simply closed — by a
@@ -712,6 +877,7 @@ async function finishWalk() {
   stopSpeaking();
   setState('paused');
   bridge?.send({ bada: 'speak_end' });
+  stopGame();
   bridge?.stop?.(); // the cloud stream bills by the minute
   el.finish.hidden = true;
   const bye = T('오늘 같이 걸어 줘서 고마워. 네 마음 이야기, 잘 들었어. 또 만나!', 'Thank you for walking with me today. I loved hearing about your day. See you again!');
@@ -806,18 +972,21 @@ el.startForm.addEventListener('submit', async (e) => {
   el.finish.hidden = false;
   started = true;
   touch();
+  unlockAudio(); // inside the tap: phones allow sound from now on
   el.startOverlay.hidden = true;
+  applyFriend();
   bridge?.play();
+  startGame();
   el.start.blur();
   // The greeting comes first in the log and the history even while the browser is still asking
   // for the microphone: a child may already be typing (⌨️) during that prompt.
-  addBubble('assistant', OPENING);
-  history.push({ role: 'assistant', content: OPENING });
+  addBubble('assistant', opening());
+  history.push({ role: 'assistant', content: opening() });
   const micReady = await startMic(); // asks for microphone permission here
   if (childTurns() === 0) {
     // Spoken only now, so that the microphone can take over when the greeting ends. If the child
     // has written meanwhile, the conversation has moved on: don't say hello over it.
-    if (voiceOn && synth) speak(OPENING);
+    if (voiceOn && speech.available) speak(opening());
     else if (micReady && !typing) listen();
   }
   if (!micReady) addBubble('system', T(
@@ -833,5 +1002,10 @@ el.startForm.addEventListener('submit', async (e) => {
     console.error('Stream setup failed', err);
     setStatus('failed');
   }
-  bridge?.onResponse((msg) => console.debug('[from UE]', msg));
+  bridge?.onResponse(onUnrealMessage);
+  // Local testing only: send raw messages to Unreal from the console, e.g.
+  // __bada.send({ bada: 'config', poopMeters: 20 }).
+  if (['localhost', '127.0.0.1'].includes(location.hostname)) {
+    window.__bada = { send: (msg) => bridge?.send(msg), game, get ready() { return ueReady; } };
+  }
 })();

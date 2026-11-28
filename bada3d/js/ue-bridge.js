@@ -8,8 +8,12 @@
 //   { bada: 'listen_start' }        the child is talking (UE turns AI_CH toward the player)
 //   { bada: 'listen_end' }
 //   { bada: 'safety' }              risk words detected (UE keeps AI_CH close and calm)
+//   { bada: 'hello', session, character }   start of a walk with the chosen friend (bear/cat/owl)
+//   { bada: 'move', x, y } / { bada: 'look', yaw, pitch }   touch controls (touch-controls.js)
+//   { bada: 'config', … }           walk game tuning
 //
-// UE answers on the response channel "bada", e.g. { bada: 'ready', character: 'Bear' }.
+// UE answers on the response channel "bada", e.g. { bada: 'ready', value: 'touch,game' }, and
+// reports the walk game: item / poop_meter / poop_urge / poop_done (bada-chat.js onUnrealMessage).
 
 // The library's UMD build expects the `sdp` package as a global. ESM CDN wrappers of the
 // library break on sdp's CommonJS export ("splitSections is not a function"), so load both

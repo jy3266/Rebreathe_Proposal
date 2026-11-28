@@ -14,7 +14,7 @@
       <p id="stream-status" class="stage__status" hidden></p>
     </section>
 
-    <aside class="chat" aria-label="바다와 대화" data-en-aria-label="Chat with Bada">
+    <aside class="chat" aria-label="친구와 대화" data-en-aria-label="Chat with your friend">
       <header class="chat__head">
         <h1 data-en="Walk with Bada">바다와 함께 걷기</h1>
         <div class="chat__tools">
@@ -37,8 +37,8 @@
       <!-- Typing (⌨️ in the header). Keys typed here never reach the 3D scene (bada-chat.js). -->
       <form id="type-form" class="type" hidden>
         <input id="type-input" type="text" maxlength="500" autocomplete="off" enterkeyhint="send"
-               placeholder="바다에게 하고 싶은 말을 써 보세요" data-en-placeholder="Write to Bada"
-               aria-label="바다에게 보낼 말" data-en-aria-label="Message to Bada">
+               placeholder="친구에게 하고 싶은 말을 써 보세요" data-en-placeholder="Write to your friend"
+               aria-label="친구에게 보낼 말" data-en-aria-label="Message to your friend">
         <button id="type-send" class="type__send" type="submit" data-en="Send">보내기</button>
       </form>
 
@@ -56,15 +56,18 @@
         <span data-en="Mic">마이크</span>
         <select id="mic-select" aria-label="마이크 고르기" data-en-aria-label="Choose a microphone"></select>
       </label>
-      <p class="chat__hint" data-en="Just talk — Bada answers when you pause · Korean works too · Walk together with the arrow keys">말을 마치면 바다가 대답해요 · 영어로 말해도 돼요 · 방향키로 같이 걸어요</p>
+      <p class="chat__hint" data-en="Just talk — your friend answers when you pause · Korean works too · Walk together with the arrow keys">말을 마치면 친구가 대답해요 · 영어로 말해도 돼요 · 방향키로 같이 걸어요</p>
     </aside>
 
     <div id="start-overlay" class="start">
       <div class="start__card">
         <h2 data-en="Walk with Bada">바다와 함께 걷기</h2>
-        <p data-en="Take a walk with Bada and talk about what happened today &lt;b&gt;out loud&lt;/b&gt;. English or Korean, either is fine. If talking is hard, you can type with ⌨️ too.&lt;br&gt;Please turn on your microphone and speakers.">바다와 해변을 걸으며 오늘 있었던 일을 <b>말로</b> 이야기해 보세요. 한국어도, 영어도 좋아요.
-           말하기 어려우면 ⌨️ 키보드로 써도 돼요.<br>
+        <p class="start__lead" data-en="Walk in the park with a friend and talk about your day &lt;b&gt;out loud&lt;/b&gt;. Pick up shiny treats ⭐🍭🎈 — and if your friend needs to poop 💩, help find the toilet 🚽!&lt;br&gt;Please turn on your microphone and speakers.">친구와 공원을 걸으며 오늘 있었던 일을 <b>말로</b> 이야기해 보세요.
+           반짝이는 선물 ⭐🍭🎈 을 줍고, 친구가 똥이 마려우면 💩 화장실 🚽 도 찾아 줘요!<br>
            마이크와 스피커를 켜 주세요.</p>
+        <!-- The walking friend: bear / cat / owl (friends.js, bada-chat.js renderFriendPicker) -->
+        <p class="start__pick" data-en="Who will you walk with today?">오늘은 누구랑 걸을까요?</p>
+        <div id="friend-pick" class="friends" role="group" aria-label="산책 친구 고르기" data-en-aria-label="Choose your walking friend"></div>
         <!-- Optional caregiver email: after the walk, the "마음 리포트" goes there (bada-chat.js finishWalk) -->
         <form id="start-form" class="start__form" novalidate>
           <label class="start__field">
@@ -80,6 +83,19 @@
           <button id="start-btn" class="start__btn" type="submit" data-en="🎤 Start the walk">🎤 산책 시작하기</button>
         </form>
         <p class="start__fine" data-en="Your voice is turned into text by Cloudflare Workers AI; the conversation goes to an AI (Claude) to write Bada&rsquo;s replies and the report. The report is a reference, not a diagnosis. Recordings, the conversation itself and your email address are never stored. If you choose to get the report by email, that report alone is kept encrypted for one year, then deleted automatically.">목소리는 글자로 바꾸는 데에만(Cloudflare Workers AI), 대화 내용은 AI(Claude)가 답과 리포트를 만드는 데에만 쓰여요. 리포트는 진단이 아닌 참고 자료예요. 녹음·대화 원문·이메일 주소는 저장하지 않아요. 리포트를 메일로 받기로 하면 그 리포트만 암호화해 1년 보관한 뒤 자동으로 지워요.</p>
+      </div>
+    </div>
+
+    <!-- Opening film of the three friends + the REBREATHE card (intro.js); removed once played -->
+    <div id="intro" class="intro" hidden>
+      <video id="intro-video" class="intro__video" src="media/intro.mp4" poster="media/intro-poster.jpg" playsinline preload="metadata"></video>
+      <button class="intro__play" type="button"><b aria-hidden="true">▶</b><span>눌러서 시작해요</span></button>
+      <button class="intro__skip" type="button" hidden>건너뛰기 ⏭</button>
+      <div class="intro__brand" hidden>
+        <img src="media/rebreathe-icon.webp" alt="" width="120" height="120">
+        <strong>REBREATHE</strong>
+        <span>presents</span>
+        <em data-en="Walk with Bada">바다와 함께 걷기</em>
       </div>
     </div>
 
