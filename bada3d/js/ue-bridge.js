@@ -59,7 +59,20 @@ function createE3dsBridge(config, container, onStatus) {
   let ended = false;
   const listeners = [];
 
-  window.addEventListener('message', (e) => {
+  // The player posts to window.top, not to its parent. When the proposal site embeds this page
+  // (#play, same origin), its messages land on the site's page, so listen there as well.
+  // A top window from another origin is not ours to listen on.
+  const targets = [window];
+  try {
+    if (window.top !== window && window.top.location.origin === location.origin) targets.push(window.top);
+  } catch { /* cross-origin top */ }
+  targets.forEach((w) => w.addEventListener('message', onMessage));
+  // Don't leave a listener behind on the site's page when this frame goes away.
+  window.addEventListener('pagehide', () => {
+    targets.forEach((w) => { if (w !== window) w.removeEventListener('message', onMessage); });
+  });
+
+  function onMessage(e) {
     let host = '';
     try { host = new URL(e.origin).hostname; } catch { return; }
     if (!E3DS_HOST.test(host)) return;
@@ -73,7 +86,7 @@ function createE3dsBridge(config, container, onStatus) {
     }
     // Anything else is a Pixel Streaming response from Unreal, e.g. { bada: 'ready' }.
     listeners.forEach((fn) => fn(data));
-  });
+  }
 
   function onLifecycle(ev) {
     switch (ev.type) {
